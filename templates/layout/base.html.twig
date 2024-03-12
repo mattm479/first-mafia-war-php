@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="us">
+<head>
+    <title>First Mafia War!</title>
+    <meta charset=utf-8>
+    <meta name='copyright' content='Copyright 2023, Boomer. All rights reserved.'>
+    <link rel='shortcut icon' href='assets/images/favicon.ico' type='image/x-icon'>
+    <link rel="stylesheet" href="assets/css/styles.css" type="text/css">
+</head>
+<body>
+    {% block body %}
+        <div class='container'>
+            {% block header %}
+                {% include 'layout/header.html.twig' with { 'header': header } %}
+            {% endblock %}
+            {% block sidebar %}
+                {% include 'layout/sidebar.html.twig' with { 'sidebar': sidebar } %}
+            {% endblock %}
+            {% block content %}{% endblock %}
+            {% block footer %}
+                {% include 'layout/footer.html.twig' %}
+            {% endblock %}
+        </div>
+    {% endblock %}
+</body>
+</html>

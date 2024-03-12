@@ -1,0 +1,42 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block header %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block content %}
+    <div id='login'>
+        <br><br>
+        <img src='assets/images/fmw_front_logo.gif' style='margin:10px 0 30px 250px;' alt="logo">
+        <br><br>
+        <fieldset class='logout' style='margin:40px 40px 20px 20px;'>
+            <legend>Login</legend>
+            <form action=authenticate.php method=post name=login>
+                <label for="username"><b>Mafioso</b>&nbsp;&nbsp;</label>
+                <input type="text" name="username" id="username" required>
+                <br><br>
+                <label for="password"><b>Password</b></label>
+                <input type=password name="password" id="password" required>
+                <br><br>
+                <div class='center'><input type=submit value='Log in'></div>
+            </form>
+            <br>
+            <div class='center'>
+                <a href='register.php'><strong>Register Free - Play Free!</strong></a>
+            </div>
+        </fieldset>
+        <fieldset style='text-align:left; margin:10px 20px 10px 40px;'>
+            <legend>About the First Mafia War</legend>
+            <p>The <strong>First Mafia War</strong> occurred in the early 1960's. The aftermath revealed - for the first time in public - the existence of the Mafia Commission. The Commission was an organization devoted to the furtherance of their members own wealth and power made up of the heads of the Mafia Families.</p>
+            <p>The war began in Palermo and spread throughout the world to places as far away as Caracas, Venezuela. It lasted just a few years and began in the fruit and vegetable wholesale market though the final straw was an underweight heroin shipment. It was <strong>incredibly</strong> bloody and the aftermath resulted in nearly 2,000 arrests - one with 114 defendants!</p>
+            <p style='margin-bottom:0;'>Do you have what it takes to survive the First Mafia War?</p>
+        </fieldset>
+        <br>
+        <div class='center'>
+            <img src='assets/images/ads/CriminalCenter.jpg' width='200' height='150' alt='Criminal Center'> &nbsp;
+            <img src='assets/images/ads/News.jpg' width='200' height='150' alt='News'> &nbsp;
+            <img src='assets/images/ads/MonteCarlo.jpg' width='200' height='150' alt='Monte Carlo'>
+        </div>
+        <br><br>
+        <p style='text-align:center;'><a href='about.html'><strong>More Information</strong></a></p>
+        <br><br><br><br>
+    </div>
+{% endblock %}

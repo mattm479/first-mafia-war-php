@@ -1,0 +1,27 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Airport</h3>
+    <div class='floatright'>
+        <img src='assets/images/photos/passport.jpg' width=275 height=253 alt='Passport Photo'>
+    </div>
+    <p>Flying is a harrowing experience, more so if you do not have the cash to fly first class. The cheaper the flight, the more Energy and Health you will lose on the trip. Flying will not kill you, but you may need some time in the hospital to settle your nerves after a poor flight.</p>
+    <p>A First Class flight will cost $100,000 and Coach flight will cost $30,000 but you can stow away in the Steerage for just $9,000 in bribes.</p>
+    <form action='airport.php?action=fly' method='POST'>
+        <table width=60% cellpadding=2 cellspacing=0 class=table>
+            <tr>
+                <th>Fly the friendly skies!</th>
+                <th colspan=3>&nbsp;</th>
+            </tr>
+            <tr><th></th></tr>
+            <tr><th></th></tr>
+            <tr>
+                <td>{{ locations|raw }}</td>
+                <td><input type=submit name=class value='First Class'></td>
+                <td><input type=submit name=class value='Coach'></td>
+                <td><input type=submit name=class value='Steerage'></td>
+            </tr>
+            <tr><td></td></tr>
+        </table>
+    </form>
+{% endblock %}

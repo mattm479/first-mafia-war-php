@@ -1,0 +1,152 @@
+{% extends 'layout/base.html.twig' %}
+{% set details = '' %}
+{% block content %}
+    <h3>{{ data.mafioso|raw }}{% if data.user.donatordays %}<span class=lightest>&nbsp; ~ Thank you very much for donating!</span>{% endif %}</h3>
+    <table class=table style='width:740px; border:0; cellspacing:0; cellpadding:1;line-height:1.5em;'>
+        <tr>
+            <td style='vertical-align: top;width: 305px;'>
+                {% set item_type = '' %}
+                {% for left_pane in data.left_pane %}
+                    {% if item_type != left_pane.items.type %}
+                        <h4>{{ left_pane.items.type }}</h4>
+                        {% set item_type = left_pane.items.type %}
+                    {% endif %}
+
+                    {% for item in left_pane.items.items %}
+                        {% if item.itmid != 602 and item.itmid != 86 %}
+                            {% set details %}<a title='Do what you will with me' href='items.php?action=util&uid={{ data.user.userid }}&iid={{ item.inv_id }}'>utilize</a>{% endset %}
+                        {% endif %}
+
+                        <span class=floatrightfixed>{{ details }}</span>{{ item.item_info|raw }}
+
+                        {% if item.inv_qty > 1 %}
+                            &nbsp;x{{ item.inv_qty }}
+                        {% endif %}
+
+                        {% if item.inv_itmexpire > 0 %}
+                            &nbsp; <span title='days left'>({{ item.inv_itmexpire }})</span>
+                        {% endif %}
+
+                        <br>
+                    {% endfor %}
+                {% endfor %}
+            </td>
+            <td style='vertical-align: top;width: 305px;border-left: solid 1px rgb(102,102,102);padding-top:-10px;padding-left:5px;'>
+                {% for right_pane in data.right_pane %}
+                    {% if item_type != right_pane.items.type %}
+                        <h4>{{ right_pane.items.type }}</h4>
+                        {% set item_type = right_pane.items.type %}
+                    {% endif %}
+
+                    {% for item in right_pane.items.items %}
+                        {% if item.itmid != 602 and item.itmid != 86 %}
+                            {% set details %}<a title='Do what you will with me' href='items.php?action=util&uid={{ data.user.userid }}&iid={{ item.inv_id }}'>utilize</a>{% endset %}
+                        {% endif %}
+
+                        <span class=floatrightfixed>{{ details }}</span>{{ item.item_info|raw }}
+
+                        {% if item.inv_qty > 1 %}
+                            &nbsp;x{{ item.inv_qty }}
+                        {% endif %}
+
+                        {% if item.inv_itmexpire > 0 %}
+                            &nbsp; <span title='days left'>({{ item.inv_itmexpire }})</span>
+                        {% endif %}
+
+                        <br>
+                    {% endfor %}
+                {% endfor %}
+            </td>
+            <td style='vertical-align: top;width: 150px;border-left: solid 1px rgb(102,102,102);padding-top:-10px;padding-left:5px;'>
+                {% if data.user.autoOwned > 1 %}
+                    <a href='automotive.php'><img src='assets/images/autos/{{ data.auto_name }}.jpg' width=150 alt='{{ data.auto_name }}' title='{{ data.auto_name }}'></a><br>
+                {% endif %}
+
+                {% if data.user.display_pic %}
+                    <img src='{{ data.user.display_pic }}' width=150 height=150 alt='{{ data.user.username }}' title='{{ data.user.username }}'><br>
+                {% endif %}
+
+                <h4>Abilities</h4>
+                <span class=floatrightfixed>&lang;#{{ data.combat_rank }}</span>Combat Ranking<br>
+                <span class=floatrightfixed>&lang;#{{ data.strength_rank }}</span>Strength: {{ data.strength }}<br>
+                <span class=floatrightfixed>&lang;#{{ data.agility_rank }}</span>Agility: {{ data.agility }}<br>
+                <span class=floatrightfixed>&lang;#{{ data.guard_rank }}</span>Guard: {{ data.guard }}<br>
+                <span class=floatrightfixed>&lang;#{{ data.iq_rank }}</span>I.Q.: {{ data.iq }}<br>
+                <span class=floatrightfixed>&lang;#{{ data.labour_rank }}</span>Labour: {{ data.labour }}<br>
+
+                <h4>Personal</h4>
+                Birthday: {{ data.birthday.month }}, {{ data.birthday.day }}<br>
+                Gender: {{ data.user.gender }}<br>
+
+                {% if data.user.donatordays %}
+                    Donator: {{ data.user.donatordays }} days left<br>
+                {% endif %}
+
+                 Age: {{ data.age }}<br> Anniversary: {{ data.anniversary }}
+                <h4>Preferences</h4>
+
+                {% if data.can_change_birthday %}
+                    <strong><a href='preferences.php?action=birthday'>Birthday</a></strong><br>
+                {% endif %}
+
+                <a href='preferences.php?action=donor'>Donations Visible</a><br>
+                <a href='preferences.php?action=forumchange'>Forum Info</a><br>
+                <a href='preferences.php?action=gym'>Gym Setting</a><br>
+                <a href='preferences.php?action=picchange'>Mugshot</a><br>
+                <a href='preferences.php?action=passchange'>Password</a><br>
+                <a href='preferences.php?action=sexchange'>Sex Change</a><br>
+                <a href='preferences.php?action=signaturechange'>Signature</a><br>
+            </td>
+        </tr>
+        <tr>
+            <td valign=top width=310>
+                <h4>Equipped Protection</h4>
+                {% for item in data.equipped_protection %}
+                    &nbsp;&nbsp; <a title=Unequip href='items.php?action=remo&iid={{ item.inv_id }}'>rm</a> &middot; {{ item.item_info|raw }} <span class=light>({{ item.item_combat_type }})</span><br>
+                {% endfor %}
+            </td>
+            <td width=310 valign=top style='border-left: solid 1px rgb(102,102,102);padding-top:-10px;padding-left:5px;'>
+                <h4>Equipped Weapons</h4>
+                {% for item in data.equipped_weapons %}
+                    &nbsp;&nbsp; <a title=Unequip href='items.php?action=remo&iid={{ item.inv_id }}'>rm</a> &middot; {{ item.item_info|raw }} <span class=light>({{ item.item_combat_type }})</span><br>
+                {% endfor %}
+            </td>
+            <td style='vertical-align: top;width: 150px;border-left: solid 1px rgb(102,102,102);padding-top:-10px;padding-left:5px;'>
+                <h4>Referrals <span style='font-weight:normal;font-size:smaller;'>(level)</span></h4>
+
+                {% if data.referrals.count == 0 %}
+                    You have no referrals.<br>&middot;> <a href='referring.php'>links and graphics</a>
+                {% else %}
+                    {{ data.referrals.mafioso.mafioso_light }} <span class=light>({{ data.referrals.mafioso.level }})</span><br>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <h4>Properties</h4>
+    <table width=90% cellspacing=0 cellpadding=2 class=table>
+        <tr>
+            <td class=center>Palermo</td>
+            <td class=center>Rome</td>
+            <td class=center>Monte Carlo</td>
+            <td class=center>New York</td>
+            <td class=center>Chicago</td>
+            <td class=center>Montreal</td>
+            <td class=center>Caracas</td>
+        </tr>
+        <tr>
+            <td class=center>{{ data.houses.palermo }}</td>
+            <td class=center>{{ data.houses.rome }}</td>
+            <td class=center>{{ data.houses.monte_carlo }}</td>
+            <td class=center>{{ data.houses.new_york }}</td>
+            <td class=center>{{ data.houses.chicago }}</td>
+            <td class=center>{{ data.houses.montreal }}</td>
+            <td class=center>{{ data.houses.caracas }}</td>
+        </tr>
+    </table>
+    <h4>Personal Notepad</h4>
+    <form action='home.php' method=POST>
+        <textarea rows=10 cols=95 name=notes>{{ data.user_notepad }}</textarea><br>
+        <input type=hidden name=update value=1>
+        <input type=submit value='Update Notes'>
+    </form>
+{% endblock %}

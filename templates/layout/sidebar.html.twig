@@ -1,0 +1,106 @@
+<div class=wrapper>
+    <div class=sidebar>
+        {% if sidebar.user.location == 42 %}
+            <br><br><p class=center><strong>Bomb<br>Shelter</strong></p>
+        {% elseif sidebar.user.fedjail %}
+            <br><br><p class=center><strong>Federal<br>Jail</strong></p>
+        {% else %}
+            <a href='donator.php'>Please Donate</a><br>
+            <a href='referring.php'>Refer your friends</a><br>
+            <hr>
+
+            {% if sidebar.user.hospital %}
+                <h6>{{ sidebar.user_location }} Hospital</h6>
+                <a href=home.php>Home</a><br>
+                <a href='hospital.php'>Neighbors ({{ sidebar.settings.hospital_count }})</a><br><br><br>
+            {% elseif sidebar.user.jail %}
+                <h6>{{ sidebar.user_location }} Jail</h6>
+                <a href='home.php'>Home</a><br>
+                <a href='jail.php'>Neighbors ({{ sidebar.settings.jail_count }})</a><br>
+                <a href='gym.php'>Jail Gym</a><br><br>
+            {% else %}
+                <h6>{{ sidebar.user_location }}</h6>
+                <a href='home.php'>Home</a><br>
+                <a href='hospital.php'>Hospital ({{ sidebar.settings.hospital_count }})</a><br>
+                <a href='jail.php'>County Jail ({{ sidebar.settings.jail_count }})</a><br>
+                <a href='explore.php'>Explore the City</a><br>
+                <hr>
+                <h6>Activities</h6>
+                <a href='mafiosoResults.php?attack=1'>Find a Fight</a><br>
+                <a href='gym.php'>Go to the Gym</a><br>
+                <a href='crime.php'>Do some Crime</a><br>
+            {% endif %}
+
+            <hr>
+            <h6>Information</h6>
+            <a class='{{ pv }}' href='polling.php'>Polls</a><br>
+            <a class='{{ bv }}' href='events.php?action=attacks'>Battles {{ bc }}</a><br>
+            <a class='{{ ev }}' href='events.php?action=general'>Events {{ ec }}</a><br>
+            <a class='{{ fv }}' href='forum.php'>Forums {{ fc }}</a><br>
+            <a class='{{ mv }}' href='mailbox.php'>Mailbox {{ mc }}</a><br>
+            <a class='{{ nv }}' href='newspaper.php'>Newspaper {{ nc }}</a><br>
+            <a class='{{ av }}' href='announcements.php'>Announcements</a><br>
+
+            <hr>
+            <h6>Gangsters</h6>
+
+            {% if sidebar.user.donatordays %}
+                <a href='friendsEnemies.php'>Contacts</a><br>
+            {% endif %}
+
+            {% if sidebar.user.gang %}
+                <a href='familyYours.php'>Your Family</a><br>
+            {% else %}
+                <a href='family.php?action=list'>Families</a><br>
+            {% endif %}
+
+            <a href='mafiosoResults.php?location=1'>Local Talent</a><br>
+            <a href='mafiosoResults.php?active=1'>Active Mafioso</a><br>
+            <hr>
+            <h6>Support</h6>
+
+            {% if sidebar.user.rankCat == 'Staff' %}
+                  <a href='staff.php'><strong>Staff</strong></a><br>
+            {% else %}
+                  <a href='help.php?action=help'><strong>Help</strong></a><br>
+            {% endif %}
+
+            <a href='help.php?action=rules'>Rules</a><br>
+            <a target=top href='wiki'>Wiki</a><br>
+            <a href='mailbox.php?action=compose&ID=22'>Mail Staff</a><br><br>
+            <a target=top href='http://www.facebook.com/group.php?gid=65391446302&v=wall'>Facebook</a><br>
+             <br><p>Mafia Time is<br>{{ sidebar.time }}</p>
+            <hr>
+            <div class=lighter>
+                <h5>Top Donators</h5>
+                <em>All Time</em><br>
+                {% for player in sidebar.all_time_donators %}
+                    &middot; {{ player }}<br>';
+                {% endfor %}
+
+                <br><em>Last 30 days</em><br>
+                {% for player in sidebar.donators_last_thirty_days %}
+                    &middot; {{ player }}<br>';
+                {% endfor %}
+
+                <br><em>This month</em><br>
+                {% for player in sidebar.donators_this_month %}
+                    &middot; {{ player }}<br>';
+                {% endfor %}
+
+                <br> &nbsp; <strong><em>Thank you!</em></strong></div><br><br><br>
+        {% endif %}
+
+    </div>
+    <div class=content>
+        <div class=floatright><a href=\'logout.php\'>- logout -</a></div>
+        {% if sidebar.user.fedjail %}
+            <h3>You have been put in Federal Jail for {{ sidebar.user.fed_days }} days.</h3><br>
+            <p>One reason is {{ sidebar.user.fedjailReason }}. We do not like removing people from this game for any duration and apologize if this is unearned. Please come back when your time is up and all is forgiven.</p>
+            <p>You have been given a chance to respond and did not take it. You may comment directly to the owner by emailing <a href='mailto:help@firstmafiawar.com'>help@firstmafiawar.com</a> to try and have your sentence reduced.</p>
+        {% endif %}
+
+        {% if sidebar.user.attacking %}
+            <h3>You ran away from the fight!</h3>
+            <p>Cowardice is not rewarded in the Mafia. You lost any gain you may have had from the fight, you lost Respect, and your own angry gang beats you to a bloody pulp and leaves you on the streets.</p>
+        {% endif %}

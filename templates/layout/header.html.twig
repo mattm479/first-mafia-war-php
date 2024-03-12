@@ -1,0 +1,86 @@
+<div class=header>
+    <a name=top></a>
+    <div class=floatleft style='padding-left:60px;padding-top:25px;'>
+        <a href='home.php'><img src='assets/images/fmw_logo.png' width=150 height=97></a>
+    </div>
+    <div class=floatrightstat>
+        <p>
+            <strong>Energy</strong> {{ header.user.energy }} / {{ header.user.maxenergy }}<br>
+            <img src='assets/images/layout/bar_left.gif' height=6><img src='assets/images/layout/bar_green.gif' width={{ header.enperc }} height=6 title='{{ header.enperc }}'><img src='assets/images/layout/bar_red.gif' width={{ header.enopp }} height=6 title='{{ header.enperc }}'><img src='assets/images/layout/bar_right.gif' height=6>
+        </p>
+        <p>
+            <strong>Will</strong> {{ header.user.will }} / {{ header.user.maxwill }}<br>
+            <img src='assets/images/layout/bar_left.gif' height=6><img src='assets/images/layout/bar_green.gif' width={{ header.wiperc }} height=6 title='{{ header.wiperc }}'><img src='assets/images/layout/bar_red.gif' width={{ header.wiopp }} height=6 title='{{ header.wiperc }}'><img src='assets/images/layout/bar_right.gif' height=6>
+        </p>
+        <p>
+            <strong>Bravery</strong> {{ header.user.brave }} / {{ header.user.maxbrave }}<br>
+            <img src='assets/images/layout/bar_left.gif' height=6><img src='assets/images/layout/bar_green.gif' width={{ header.brperc }} height=6 title='{{ header.brperc }}'><img src='assets/images/layout/bar_red.gif' width={{ header.bropp }} height=6 title='{{ header.brperc }}'><img src='assets/images/layout/bar_right.gif' height=6>
+        </p>
+        <p>
+            <strong>Health</strong> {{ header.user.hp }} / {{ header.user.maxhp }}<br>
+            <img src='assets/images/layout/bar_left.gif' height=6><img src='assets/images/layout/bar_green.gif' width={{ header.hpperc }} height=6 title='{{ header.hpperc }}'><img src='assets/images/layout/bar_red.gif' width={{ header.hpopp }} height=6 title='{{ header.hpperc }}'><img src='assets/images/layout/bar_right.gif' height=6>
+        </p>
+    </div>
+    <div class=center>
+        <table border=0 cellspacing=0 cellpadding=0 align=center>
+            <tr>
+                <td style='padding-top:.5em; text-align:right;'>{{ header.mafioso|raw }}</td>
+                <td style='padding-top:.5em; text-align:left;'>&nbsp;<span class=light>(combat rank: {{ header.user.comRank }})</span></td>
+            </tr>
+            <tr><td colspan=2></td></tr>
+            <tr>
+                <td style='text-align:right;'>Cash: </td>
+                <td style='text-align:left;'>&nbsp;{{ header.cash }} <span class=light><a href='bank.php'>(bank)</a></span></td>
+            </tr>
+            <tr>
+                <td style='text-align:right;'>Accounts: </td>
+                <td style='text-align:left;'>&nbsp;{{ header.accounts }}</td>
+            </tr>
+            <tr>
+                <td style='text-align:right;'>Respect: </td>
+                <td style='text-align:left;'>&nbsp;{{ header.respect }} <span class=light><a title='boost energy' href='wealth.php?act=genergy&use=respect&mid={{ header.user.userid }}'>(energy)</a> &nbsp; <a title='improve IQ' href='wealth.php?act=prestig&use=respect&mid={{ header.user.userid }}'>(IQ)</a></span></td>
+            </tr>
+            <tr>
+                <td style='text-align:right;'>Level: </td>
+                <td style='text-align:left;'>&nbsp;{{ header.user.level }} <span class=light>({{ header.experc }}%)</span></td>
+            </tr>
+            <tr>
+                <td class=center colspan=2>
+                    {% if header.user.rankCat == 'Staff' %}
+                        <h6 class=staffer>You are Staff. Remember?</h6>
+                    {% endif %}
+
+                    {% if header.user.gangLockdown > 0 %}
+                        <h6>You are on Lockdown! <a title='end lockdown' href='familyYours.php?action=warfarlr&nu4={{ header.user.userid }}'>End it for yourself?</a></h6>
+                    {% endif %}
+
+                    {% if header.user.location == 0 %}
+                        <h6><a href='airport.php?action=fly&destination=1'>Leave the protection of the Manor</a></h6>
+                    {% elseif header.user.location == 42 %}
+                        <h6><a href='airport.php?action=fly&destination=1'>Leave the protection of the Bomb Shelter</a></h6>
+                    {% endif %}
+
+                    {% if header.user.hospital > 0 %}
+                        <h6>Hospitalized for {{ header.user.hospital }} more minutes.</h6>
+                    {% elseif header.user.jail > 0 %}
+                        <h6>Jailed for {{ header.user.jail }} more minutes.</h6>
+                    {% elseif header.user.hideLocation == 1 %}
+                        <br>
+                        <form action='gameHideSeek.php' method=POST>
+                            <input type=hidden name=actn value='hide'>
+                            <input type=hidden name=hyde value='{{ header.script_name }}'>
+                            <input type=submit value='Hide Here'>
+                        </form>
+                    {% elseif header.user.hideLocation != 0 and header.user.money > header.seek_price %}
+                        <br>
+                        <form action='gameHideSeek.php' method=POST>
+                            <input type=hidden name=actn value='seek'>
+                            <input type=hidden name=hyde value='{{ header.script_name }}'>
+                            <input type=submit value='Seek for ${{ header.seek_price }}'>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

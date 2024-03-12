@@ -1,0 +1,112 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>{{ data.location_name }}</h3>
+    <table width=95% border=0 cellpadding=2 cellspacing=0 class=table>
+        <tr>
+            <td valign=top>
+                <h6>Uptown</h6>
+                {% if data.user.autoOwned == 0 %}
+                    <a title='$1,100' href='business.php?action=spgetcar'>Hire Car</a><br><br>
+                {% else %}
+                    {% if data.user.location > 0 %}
+                        <a href='estate.php'>Estate Agent</a><br>
+                    {% endif %}
+                    {% for business in data.auto_businesses %}
+                        <a href='business.php?action=shop&ID={{ business.busID }}'>{{ business.busName }}</a><br>
+                    {% endfor %}
+                {% endif %}
+
+                <h6>Downtown</h6>
+                <a href='consignmentMarket.php'>Consignment Markets</a><br>
+                <a href='bank.php'>First Mafia Bank</a><br>
+                {% if data.user.location == 25 %}
+                    <a href='gameRoulette.php'>Roulette</a><br>
+                    <a href='gameSlots.php'>Slot Machines</a><br>
+                {% endif %}
+
+                {% for business in data.businesses %}
+                    <a href='business.php?action=shop&ID={{ business.busID }}'>{{ business.busName }}</a><br>
+                {% endfor %}
+
+                {% if data.user.location == 0 %}
+                    <a href='business.php?action=shop&ID=12'>Rimes Srl</a><br>
+                {% endif %}
+            </td>
+            <td valign=top>
+                <h6>Transportation</h6>
+                <a href='airport.php'>Airport</a><br>
+                <a href='automotive.php'>Used Car Lot</a><br>
+
+                <h6>Things to do</h6>
+                <a href='streetfight.php'>Street Fight!</a><br>
+                <a href='gameHideSeek.php'>Hide &amp; Seek</a><br>
+                <a href='visit.php?action=don'>Visit the Don's Family</a><br>
+
+                {% if data.user.location == 1 %}
+                    <a href='visit.php?action=winery'>Visit the Winery</a><br>
+                {% elseif data.user.location == 10 %}
+                    <a href='visit.php?action=football'>Take in a Football game</a><br>
+                {% elseif data.user.location == 25 %}
+                    <a href='visit.php?action=casino'>Visit the Casino</a><br>
+                {% elseif data.user.location == 50 %}
+                    <a href='visit.php?action=track'>Visit the Track </a><br>
+                {% elseif data.user.location == 100 %}
+                    <a href='visit.php?action=meigsfield'>Visit Meigs Field</a><br>
+                {% elseif data.user.location == 250 %}
+                    <a href='visit.php?action=distillery'>Visit Meagher Distillery</a><br>
+                {% elseif data.user.location == 500 %}
+                    <a href=\'visit.php?action=plantation\'>Visit El Carmen Plantation</a><br>
+                {% endif %}
+            </td>
+            <td valign=top>
+                <h6>Mafia Families</h6>
+                <a href='family.php?action=list'>Family Table</a><br>
+                <a href='family.php?action=view&ID=1'>Staff Family</a><br>
+
+                <h6>General Activities</h6>
+                <a href='job.php'>Go to work</a><br>
+                <a href='education.php'>Find a Mentor</a><br>
+                <a href='raffle.php'>Play the Raffle</a><br>
+            </td>
+            <td valign=top>
+                <h6>Nothing and Nil</h6>
+                <a href='fedjail.php'>Federal Jail</a><br><br>
+
+                <h6>Measure yourself</h6>
+                <a href='statistics.php'>Statistics</a><br>
+                <a href='statisticsTopMafia.php'>Top Mafia</a><br>
+                <a href='statisticsSpecial.php'>Special Gear</a><br>
+            </td>
+            <td valign=top style='font-size:smaller;'>
+                <h6>Top Fighters Today</h6>
+                {% for fighter in data.top_fighters_today %}
+                    {{ fighter.countValue }} &middot; {{ fighter.attacker }} <br>
+                {% endfor %}
+
+                <h6>Top Fighters this Week</h6>
+                {% for fighter in data.top_fighters_weekly %}
+                    {{ fighter.countValue }} &middot; {{ fighter.attacker }} <br>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+
+    <h6 class=fewborders>Mafia Inquirer</h6>
+    <div style='font-size:smaller;'>
+        {% if data.magazine_column_two.count %}
+            <div class=floatrightboxfixed>
+                {% for article in data.magazine_column_two.news %}
+                    {{ article }}<br><br>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% for article in data.magazine_column_one.news %}
+            {{ article }}<br><br>
+        {% endfor %}
+        <br>
+    </div>
+    <div class=center>
+        <img src='assets/images/photos/city.jpg' width=350 height=200 alt=Cityscape>
+    </div>
+{% endblock %}
