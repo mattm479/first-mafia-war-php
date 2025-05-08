@@ -117,22 +117,22 @@ class Header
 
         $thirtyDaysAgo = time() - (30 * 24 * 60 * 60);
         $allTimeDonators = [];
-        $result = $this->_db->query("SELECT ldBuyer,sum(ldValue) AS sumValue FROM logsDonations LEFT JOIN users u ON ldBuyer=u.userid WHERE donateMshow='yes' GROUP BY ldBuyer ORDER BY sumValue DESC LIMIT 3");
+        /*$result = $this->_db->query("SELECT ldBuyer,sum(ldValue) AS sumValue FROM logsDonations LEFT JOIN users u ON ldBuyer=u.userid WHERE donateMshow='yes' GROUP BY ldBuyer ORDER BY sumValue DESC LIMIT 3");
         while ($row = mysqli_fetch_assoc($result)) {
             $allTimeDonators[] = mafiosoLight($row['ldBuyer']);
-        }
+        }*/
 
         $donatorsLastThirtyDays = [];
-        $result = $this->_db->query("SELECT ldBuyer,sum(ldValue) AS sumValue FROM logsDonations LEFT JOIN users u ON ldBuyer=u.userid WHERE ldTime>$thirtyDaysAgo AND donateMshow='yes' GROUP BY ldBuyer ORDER BY sumValue DESC LIMIT 3");
+        /*$result = $this->_db->query("SELECT ldBuyer,sum(ldValue) AS sumValue FROM logsDonations LEFT JOIN users u ON ldBuyer=u.userid WHERE ldTime>$thirtyDaysAgo AND donateMshow='yes' GROUP BY ldBuyer ORDER BY sumValue DESC LIMIT 3");
         while ($row = mysqli_fetch_assoc($result)) {
             $donatorsLastThirtyDays[] = mafiosoLight($row['ldBuyer']);
-        }
+        }*/
 
         $donatorsThisMonth = [];
-        $result = $this->_db->query("SELECT userid FROM users WHERE donatedM>0 AND donateMshow='yes' ORDER BY donatedM DESC LIMIT 3");
+        /*$result = $this->_db->query("SELECT userid FROM users WHERE donatedM>0 AND donateMshow='yes' ORDER BY donatedM DESC LIMIT 3");
         while ($row = mysqli_fetch_assoc($result)) {
             $donatorsThisMonth[] = mafiosoLight($row['userid']);
-        }
+        }*/
 
         if ($this->_user['attacking']) {
             $this->_db->query("UPDATE users SET respect = respect - 5, attacking = 0, hospital = 60, hjreason = 'Ran away from a fight.' WHERE userid = {$this->_user['userid']}");

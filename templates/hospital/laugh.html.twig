@@ -1,0 +1,17 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Hospital</h3><br>
+    {% if data.error == "MISSING_USERID" %}
+        <p>UserId is missing.</p>
+    {% elseif data.error == "NOT_IN_HOSPITAL"  %}
+        <p>I don't know who you are trying to laugh at, but they're not here.</p>
+        <p><a href='hospital.php'>Back to the hospital</a> or <a href='home.php'>head on home</a>.</p>
+    {% elseif data.error == "NOT_ENOUGH_MONEY" %}
+        <p>Did you not read the small print?  It costs {{ data.formatted_cost }} in bribes to get into their room and laugh at them. If you wait a while, it will get cheaper as they get healthier and move to a room closer to the entrance.</p>
+        <p><a href='hospital.php'>Back to the hospital</a> or <a href='bank.php'>head to the bank</a>.</p>
+    {% else %}
+        <p>You spent {{ data.formatted_cost }} to bribe your way to see {{ data.mafioso|raw }}. You take a deep breath, point at them, and laugh viciously. The mental anguish increases their hospital time by a whole minute. Jerk.</p>
+        <p><a href='hospital.php'>Back to the hospital</a> or <a href='explore.php'>head into town</a></p>
+    {% endif %}
+{% endblock %}

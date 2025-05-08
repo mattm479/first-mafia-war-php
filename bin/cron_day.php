@@ -1,11 +1,12 @@
 <?php
 require_once "../vendor/autoload.php";
 
-use Fmw\Database;
+use Fmw\Application;
 
-$config = require "../config/application.php";
+$application = new Application();
+$db = $application->db;
+
 require_once "../public/global_func.php";
-$db = new Database($config['database']);
 
 // General updates
 $db->query("UPDATE family SET famRespect = famRespect - 1 WHERE famRespect > 1");
@@ -178,5 +179,3 @@ $db->query("DELETE FROM news WHERE newsTime < {$onedayago}");
 
 // Mafioso Inactive shift
 $db->query("UPDATE users SET `rank` = 'Inattivo' WHERE `rank` = 'Mafioso' AND trackActionTime < {$twentyonedaysago}");
-
-$db->close();

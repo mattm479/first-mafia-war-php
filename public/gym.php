@@ -7,39 +7,45 @@ require_once "globals.php";
 global $db, $headers, $user, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 1, $nlck = 0);
 
-$action = isset($_GET['act']) ? mysql_tex($_GET['act']) : '';
-$agi = isset($_POST['agi']) ? mysql_num($_POST['agi']) : 0;
-$gua = isset($_POST['gua']) ? mysql_num($_POST['gua']) : 0;
-$str = isset($_POST['str']) ? mysql_num($_POST['str']) : 0;
-$lab = isset($_POST['lab']) ? mysql_num($_POST['lab']) : 0;
-$help = '';
-$bruno = 0;
-$chiun = 1;
-$helga = 0;
-$hartman = 1;
+$action     = isset($_GET['act']) ? mysql_tex($_GET['act']) : '';
+$agi        = isset($_POST['agi']) ? mysql_num($_POST['agi']) : 0;
+$gua        = isset($_POST['gua']) ? mysql_num($_POST['gua']) : 0;
+$str        = isset($_POST['str']) ? mysql_num($_POST['str']) : 0;
+$lab        = isset($_POST['lab']) ? mysql_num($_POST['lab']) : 0;
+$help       = "";
+$bruno      = 0;
+$chiun      = 1;
+$helga      = 0;
+$hartman    = 1;
 
-$rhel = mysqli_fetch_assoc($db->query("SELECT inv_userid FROM inventory WHERE inv_userid={$userId} AND inv_itemid = 627"));
-if (isset($rhel['inv_userid']) && $rhel['inv_userid'] == $userId) {
-    $help .= ' Helga the ' . itemInfo(627) . ' is using her skills to give you a better average.';
-    $helga = 10;
+$query = $db->query("SELECT inv_userid, inv_itemid FROM inventory WHERE inv_userid={$userId} AND inv_itemid IN (627, 681)");
+while ($row = mysqli_fetch_assoc($query)) {
+    if (isset($row['inv_userid']) && $row['inv_userid'] == $userId) {
+        if ($row['inv_itemid'] == 627) {
+            $help .= " Helga the " . itemInfo(627) . " is using her skills to give you a better average.";
+            $helga = 10;
+        }
+
+        if ($row['inv_itemid'] == 681) {
+            $help .= " Gny. Sgt. Hartman motivates you to do more, and so you use less energy than you plan.";
+            $hartman = 0.75;
+        }
+    }
 }
 
-$rhar = mysqli_fetch_assoc($db->query("SELECT inv_userid FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 681"));
-if (isset($rhar['inv_userid']) && $rhar['inv_userid'] == $userId) {
-    $help .= ' Gny. Sgt. Hartman motivates you to do more, and so you use less energy than you plan.';
-    $hartman = 0.75;
-}
+$query = $db->query("SELECT userid, courseid FROM coursesdone WHERE courseid IN (33, 34) AND userid = {$userId}");
+while ($row = mysqli_fetch_assoc($query)) {
+    if ((isset($row['userid']) && $row['userid'] == $userId) || $user['jail'] > 0) {
+        if ($user['jail'] > 0 || $row['courseid'] == 33) {
+            $help .= " Bruno the Jail yard Trainer is helping you achieve <strong>real</strong> results increasing your potential.";
+            $bruno = 5;
+        }
 
-$rbru = mysqli_fetch_assoc($db->query("SELECT userid FROM coursesdone WHERE courseid = 33 AND userid = {$userId}"));
-if ($user['jail'] > 0 || (isset($rbru['userid']) && $rbru['userid'] == $userId)) {
-    $help .= ' Bruno the Jail yard Trainer is helping you achieve <strong>real</strong> results increasing your potential.';
-    $bruno = 5;
-}
-
-$rchi = mysqli_fetch_assoc($db->query("SELECT userid FROM coursesdone WHERE courseid = 34 AND userid = {$userId}"));
-if (isset($rchi['userid']) && $rchi['userid'] == $userId) {
-    $help .= ' Chiun is helping you strengthen your fingers and focus reducing your willpower loss.';
-    $chiun = 0.7;
+        if ($row['courseid'] == 34) {
+            $help .= " Chiun is helping you strengthen your fingers and focus reducing your willpower loss.";
+            $chiun = 0.7;
+        }
+    }
 }
 
 switch ($action) {
@@ -66,34 +72,36 @@ function index(Database $db, array $user, int $userId, int $agi, int $gua, int $
             $lvlm = 1;
         }
 
-        $mn = 20 + $helga;
-        $mx = 35 + $bruno;
-        $agiG = 0;
-        $guaG = 0;
-        $strG = 0;
-        $labG = 0;
+        $min = 20 + $helga;
+        $max = 35 + $bruno;
+        $gains = [
+            'agility' => 0,
+            'guard' => 0,
+            'strength' => 0,
+            'labour' => 0
+        ];
         while ($will > 0 && ($agi > 0 || $gua > 0 || $str > 0 || $lab > 0)) {
             $des = $will / $maxwill;
             if ($agi > 0) {
-                $agiG += round(rand($mn, $mx) * $des);
+                $gains['agility'] += round(rand($min, $max) * $des);
                 $agi -= 1;
                 $will -= rand(5, $lvlm);
             }
 
             if ($gua > 0) {
-                $guaG += round(rand($mn, $mx) * $des);
+                $gains['guard'] += round(rand($min, $max) * $des);
                 $gua -= 1;
                 $will -= rand(5, $lvlm);
             }
 
             if ($str > 0) {
-                $strG += round(rand($mn, $mx) * $des);
+                $gains['strength'] += round(rand($min, $max) * $des);
                 $str -= 1;
                 $will -= rand(5, $lvlm);
             }
 
             if ($lab > 0) {
-                $labG += round(rand($mn, $mx) * $des);
+                $gains['labour'] += round(rand($min, $max) * $des);
                 $lab -= 1;
                 $will -= rand(5, $lvlm);
             }
@@ -108,29 +116,28 @@ function index(Database $db, array $user, int $userId, int $agi, int $gua, int $
             $will = 0;
         }
 
-        $user['agility'] += $agiG;
-        $user['guard'] += $guaG;
-        $user['strength'] += $strG;
-        $user['labour'] += $labG;
+        $user['agility'] += $gains['agility'];
+        $user['guard'] += $gains['guard'];
+        $user['strength'] += $gains['strength'];
+        $user['labour'] += $gains['labour'];
 
-        $db->query("UPDATE userstats SET agility = agility + {$agiG}, guard = guard + {$guaG}, strength = strength + {$strG}, labour = labour + {$labG} WHERE userid = {$userId}");
-        $db->query("UPDATE users SET gymWorkout = 0, will = {$will}, energy = energy - {$amt} WHERE userid = {$userId}");
+        $db->query("UPDATE users u INNER JOIN userstats us USING (userid) SET u.gymWorkout = 0, u.will = {$will}, u.energy = energy - {$amt}, us.agility = agility + {$gains['agility']}, us.guard = guard + {$gains['guard']}, us.strength = strength + {$gains['strength']}, us.labour = labour + {$gains['labour']} WHERE u.userid = {$userId}");
 
         $lwork = '<p><strong>Last Workout</strong>:';
-        if ($agiG > 0) {
-            $lwork .= ' You run around the track and gain ' . number_format($agiG) . ' agility.';
+        if ($gains['agility'] > 0) {
+            $lwork .= ' You run around the track and gain ' . number_format($gains['agility']) . ' agility.';
         }
 
-        if ($guaG > 0) {
-            $lwork .= ' You practice ducking and blocks and gain ' . number_format($guaG) . ' guard.';
+        if ($gains['guard'] > 0) {
+            $lwork .= ' You practice ducking and blocks and gain ' . number_format($gains['guard']) . ' guard.';
         }
 
-        if ($strG > 0) {
-            $lwork .= ' You lift weights and gain ' . number_format($strG) . ' strength.';
+        if ($gains['strength'] > 0) {
+            $lwork .= ' You lift weights and gain ' . number_format($gains['strength']) . ' strength.';
         }
 
-        if ($labG > 0) {
-            $lwork .= ' You carry boxes to the warehouse and gain ' . number_format($labG) . ' labour.';
+        if ($gains['labour'] > 0) {
+            $lwork .= ' You carry boxes to the warehouse and gain ' . number_format($gains['labour']) . ' labour.';
         }
 
         $lwork .= ' Nicely done.</p>';

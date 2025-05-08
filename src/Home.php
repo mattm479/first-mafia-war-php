@@ -86,7 +86,7 @@ class Home
             $data['referrals']['mafioso'][] = [ 'mafioso_light' => mafiosoLight($row['userid']), 'level' => $row['level'] ];
         }
 
-        $locations[] = [
+        $locations = [
             [ 'name' => 'palermo', 'dbValue' => 'residence_1' ],
             [ 'name' => 'rome', 'dbValue' => 'residence_10' ],
             [ 'name' => 'monte_carlo', 'dbValue' => 'residence_25' ],

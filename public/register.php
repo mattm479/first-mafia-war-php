@@ -1,8 +1,10 @@
 <?php
 
+require_once "../vendor/autoload.php";
+
 use Fmw\Database;
 
-$config = require "config/application.php";
+$config = require_once "../config/application.php";
 
 $db = new Database($config['database']);
 $settings = array();

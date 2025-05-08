@@ -8,9 +8,8 @@ require_once "../public/global_func.php";
 $db = new Database($config['database']);
 
 // brave update
-$db->query("UPDATE users SET brave = brave + (maxbrave / 15) WHERE brave < maxbrave AND donatordays = 0");
-$db->query("UPDATE users SET brave = brave + (maxbrave / 10) WHERE brave < maxbrave AND donatordays > 0");
-$db->query("UPDATE users SET brave = brave + 2 WHERE level < 20");
+$db->query("UPDATE users SET brave = brave + (maxbrave / IF(donatordays > 0, 10, 15)) WHERE brave < maxbrave");
+$db->query("UPDATE users SET brave = brave + 2 WHERE level < 20 AND brave < maxbrave");
 $db->query("UPDATE users SET brave = maxbrave WHERE brave > maxbrave");
 
 // hp update
@@ -22,9 +21,8 @@ $db->query("UPDATE users SET hp = hp + (maxhp / 15) WHERE hp < maxhp");
 $db->query("UPDATE users SET hp = maxhp WHERE hp > maxhp");
 
 // energy update
-$db->query("UPDATE users SET energy = energy + (maxenergy / 20) WHERE energy < maxenergy");
-$db->query("UPDATE users SET energy = energy + (maxenergy / 15) WHERE energy < maxenergy AND autoOwned > 0");
-$db->query("UPDATE users SET energy = energy + 2 WHERE level < 20");
+$db->query("UPDATE users SET energy = energy + (maxenergy / IF(autoOwned > 0, 15, 20)) WHERE energy < maxenergy");
+$db->query("UPDATE users SET energy = energy + 2 WHERE level < 20 AND energy < maxenergy");
 $db->query("UPDATE users SET energy = maxenergy WHERE energy > maxenergy");
 
 // will update

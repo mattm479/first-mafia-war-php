@@ -1,22 +1,22 @@
 <?php
 
-global $db, $headers, $user, $userId;
+global $application, $userId;
 
 use Fmw\Application;
 
 function attackGangWar($winner, $loser, $gangBase = 1): string
 {
-    global $db;
+    global $application;
 
-    $win = mysqli_fetch_assoc($db->query("SELECT gang,gangrank,userid FROM users WHERE userid = {$winner}"));
-    $lose = mysqli_fetch_assoc($db->query("SELECT gang,gangrank,userid FROM users WHERE userid = {$loser}"));
-    $war = mysqli_fetch_assoc($db->query("SELECT famWarID, famWarType, famWarAttPoints, famWarAtt, famWarDefPoints, famWarDef FROM familyWar WHERE famWarEnd = 0 AND ((famWarAtt = {$win['gang']} AND famWarDef = {$lose['gang']}) OR (famWarDef = {$win['gang']} AND famWarAtt = {$lose['gang']}))"));
+    $win = mysqli_fetch_assoc($application->db->query("SELECT gang,gangrank,userid FROM users WHERE userid = {$winner}"));
+    $lose = mysqli_fetch_assoc($application->db->query("SELECT gang,gangrank,userid FROM users WHERE userid = {$loser}"));
+    $war = mysqli_fetch_assoc($application->db->query("SELECT famWarID, famWarType, famWarAttPoints, famWarAtt, famWarDefPoints, famWarDef FROM familyWar WHERE famWarEnd = 0 AND ((famWarAtt = {$win['gang']} AND famWarDef = {$lose['gang']}) OR (famWarDef = {$win['gang']} AND famWarAtt = {$lose['gang']}))"));
 
     if ($war['famWarType'] > 1 || ($war['famWarType'] == 1 && $win['gangrank'] == 1 && $lose['gangrank'] == 1)) {
-        $db->query("UPDATE familyWar SET famWarAttPoints = famWarAttPoints - {$gangBase} WHERE famWarAtt = {$lose['gang']} AND famWarID = {$war['famWarID']}");
-        $db->query("UPDATE familyWar SET famWarDefPoints = famWarDefPoints - {$gangBase} WHERE famWarDef = {$lose['gang']} AND famWarID = {$war['famWarID']}");
-        $db->query("UPDATE familyWar SET famWarAttPoints = famWarAttPoints + {$gangBase} WHERE famWarAtt = {$win['gang']} AND famWarID = {$war['famWarID']}");
-        $db->query("UPDATE familyWar SET famWarDefPoints = famWarDefPoints + {$gangBase} WHERE famWarDef = {$win['gang']} AND famWarID = {$war['famWarID']}");
+        $application->db->query("UPDATE familyWar SET famWarAttPoints = famWarAttPoints - {$gangBase} WHERE famWarAtt = {$lose['gang']} AND famWarID = {$war['famWarID']}");
+        $application->db->query("UPDATE familyWar SET famWarDefPoints = famWarDefPoints - {$gangBase} WHERE famWarDef = {$lose['gang']} AND famWarID = {$war['famWarID']}");
+        $application->db->query("UPDATE familyWar SET famWarAttPoints = famWarAttPoints + {$gangBase} WHERE famWarAtt = {$win['gang']} AND famWarID = {$war['famWarID']}");
+        $application->db->query("UPDATE familyWar SET famWarDefPoints = famWarDefPoints + {$gangBase} WHERE famWarDef = {$win['gang']} AND famWarID = {$war['famWarID']}");
 
         // Did you win the fight?
         $targ = ($war['famWarType'] * 10 + 10) - $gangBase;
@@ -25,14 +25,14 @@ function attackGangWar($winner, $loser, $gangBase = 1): string
         $cash = $war['famWarType'] * 3000000;
 
         if (($war['famWarAttPoints'] >= $targ && $war['famWarAtt'] == $win['gang']) || ($war['famWarDefPoints'] >= $targ && $war['famWarDef'] == $win['gang'])) {
-            $db->query("UPDATE familyWar SET famWarEnd = unix_timestamp(), famWarDisID = {$lose['gang']} WHERE famWarID = {$war['famWarID']}");
-            $db->query("UPDATE family SET famRespect = famRespect + {$wgai}, famVaultCash = famVaultCash + {$cash} + {$cash} WHERE famID = {$win['gang']}");
-            $db->query("UPDATE family SET famRespect = famRespect - {$lgai}, famVaultCash = famVaultCash - {$cash} WHERE famID = {$lose['gang']}");
+            $application->db->query("UPDATE familyWar SET famWarEnd = unix_timestamp(), famWarDisID = {$lose['gang']} WHERE famWarID = {$war['famWarID']}");
+            $application->db->query("UPDATE family SET famRespect = famRespect + {$wgai}, famVaultCash = famVaultCash + {$cash} + {$cash} WHERE famID = {$win['gang']}");
+            $application->db->query("UPDATE family SET famRespect = famRespect - {$lgai}, famVaultCash = famVaultCash - {$cash} WHERE famID = {$lose['gang']}");
 
-            $famlos = mysqli_fetch_assoc($db->query("SELECT famVaultCash, famID FROM family WHERE famID = {$lose['gang']}"));
+            $famlos = mysqli_fetch_assoc($application->db->query("SELECT famVaultCash, famID FROM family WHERE famID = {$lose['gang']}"));
 
             if ($famlos['famVaultCash'] < 0) {
-                $db->query("UPDATE family SET famRespect = famRespect - {$wgai}, famVaultCash = 1 WHERE famID = {$lose['gang']}");
+                $application->db->query("UPDATE family SET famRespect = famRespect - {$wgai}, famVaultCash = 1 WHERE famID = {$lose['gang']}");
             }
 
             newsPost(1, 'The ' . familyName($win['gang']) . ' Family has won their ' . warType($war['famWarType']) . ' with the ' . familyName($lose['gang']) . ' Family and gained $' . number_format($cash * 2) . ' in booty.');
@@ -134,22 +134,25 @@ function daysOld($start, $end = 0): string
 
 function educationFinish($courseId, $userId): void
 {
-    global $db;
+    global $application;
 
-    $db->query("INSERT INTO coursesdone (userid, courseid) VALUES ({$userId}, {$courseId})");
-    $db->query("UPDATE users SET course = 0, cdays = 0 WHERE userid = {$userId}");
+    $application->db->query("INSERT INTO coursesdone (userid, courseid) VALUES ({$userId}, {$courseId})");
+    $application->db->query("UPDATE users SET course = 0, cdays = 0 WHERE userid = {$userId}");
 
-    $course = mysqli_fetch_assoc($db->query("SELECT crID, crNAME, crSTR, crGUARD, crLABOUR, crAGIL, crIQ FROM courses WHERE crID = {$courseId}"));
+    $course = mysqli_fetch_assoc($application->db->query("SELECT crID, crNAME, crSTR, crGUARD, crLABOUR, crAGIL, crIQ FROM courses WHERE crID = {$courseId}"));
 
     if ($courseId == 21) {
-        $db->query("UPDATE users SET maxhp = maxhp + 50 WHERE userid = {$userId}");
+        $application->db->query("UPDATE users SET maxhp = maxhp + 50 WHERE userid = {$userId}");
     }
+
     if ($courseId == 22) {
-        $db->query("UPDATE users SET respect = respect + 100 WHERE userid = {$userId}");
+        $application->db->query("UPDATE users SET respect = respect + 100 WHERE userid = {$userId}");
     }
+
     if ($courseId == 29) {
         itemAdd(93, 0, $userId, 0, 1);
     }
+
     if ($courseId == 30) {
         itemAdd(100, 0, $userId, 0, 1);
     }
@@ -184,7 +187,7 @@ function educationFinish($courseId, $userId): void
     $ev = substr($ev, 1);
 
     if ($upd) {
-        $db->query("UPDATE users u LEFT JOIN userstats us ON u.userid = us.userid SET us.userid = us.userid $upd WHERE u.userid = {$userId}");
+        $application->db->query("UPDATE users u LEFT JOIN userstats us ON u.userid = us.userid SET us.userid = us.userid $upd WHERE u.userid = {$userId}");
     }
 
     logEvent($userId, "You have finished {$course['crNAME']}. <a href='education.php'>Get a new Mentor</a>");
@@ -192,9 +195,9 @@ function educationFinish($courseId, $userId): void
 
 function familyName($familyId): string
 {
-    global $db;
+    global $application;
 
-    $family = mysqli_fetch_assoc($db->query("SELECT famTag, famID, famName FROM family WHERE famID = {$familyId}"));
+    $family = mysqli_fetch_assoc($application->db->query("SELECT famTag, famID, famName FROM family WHERE famID = {$familyId}"));
 
     return (isset($family['famID']) && $family['famID'] != 0) ? "<a title='{$family['famTag']}' href='family.php?action=view&ID={$family['famID']}'>{$family['famName']}</a>" : "None";
 }
@@ -219,22 +222,23 @@ function houseName($houseId)
 
 function itemAdd($itemId, $quantity, $expires = 0, $userId = 0, $familyId = 0): void
 {
-    global $db;
+    global $application;
 
     if ($userId > 0) {
-        $inventoryItemId = mysqli_fetch_assoc($db->query("SELECT inv_id FROM inventory WHERE inv_userid = {$userId} AND inv_itemid={$itemId} AND inv_equip='no'"));
+        $inventoryItemId = mysqli_fetch_assoc($application->db->query("SELECT inv_id FROM inventory WHERE inv_userid = {$userId} AND inv_itemid={$itemId} AND inv_equip='no'"));
     } else if ($familyId > 0) {
-        $inventoryItemId = mysqli_fetch_assoc($db->query("SELECT inv_id FROM inventory WHERE inv_famid = {$familyId} AND inv_itemid = {$itemId} AND inv_equip='no'"));
+        $inventoryItemId = mysqli_fetch_assoc($application->db->query("SELECT inv_id FROM inventory WHERE inv_famid = {$familyId} AND inv_itemid = {$itemId} AND inv_equip='no'"));
     }
 
-    $item = mysqli_fetch_assoc($db->query("SELECT itmid, itmExpire FROM items WHERE itmid = {$itemId}"));
+    $item = mysqli_fetch_assoc($application->db->query("SELECT itmid, itmExpire FROM items WHERE itmid = {$itemId}"));
     if (isset($inventoryItemId) && $inventoryItemId['inv_id'] > 0 && $item['itmExpire'] == 0) {
-        $db->query("UPDATE inventory SET inv_qty = inv_qty + {$quantity} WHERE inv_id = {$inventoryItemId['inv_id']}");
+        $application->db->query("UPDATE inventory SET inv_qty = inv_qty + {$quantity} WHERE inv_id = {$inventoryItemId['inv_id']}");
     } else {
         if (($expires > $item['itmExpire'] || $expires == 0) && $item['itmExpire'] > 0) {
             $expires = $item['itmExpire'];
         }
-        $db->query("INSERT INTO inventory (inv_itemid, inv_itmexpire, inv_userid, inv_famid, inv_qty, inv_equip) VALUES ({$itemId}, {$expires}, {$userId}, {$familyId}, {$quantity}, 'no')");
+
+        $application->db->query("INSERT INTO inventory (inv_itemid, inv_itmexpire, inv_userid, inv_famid, inv_qty, inv_equip) VALUES ({$itemId}, {$expires}, {$userId}, {$familyId}, {$quantity}, 'no')");
     }
 
     if ($userId > 0) {
@@ -244,20 +248,20 @@ function itemAdd($itemId, $quantity, $expires = 0, $userId = 0, $familyId = 0): 
 
 function itemDelete($inventoryId, $quantity, $userId = 0, $familyId = 0): void
 {
-    global $db;
+    global $application;
 
     if ($userId > 0) {
-        $result = $db->query("SELECT inv_id, inv_qty FROM inventory WHERE inv_userid = {$userId} AND inv_id = {$inventoryId}");
+        $result = $application->db->query("SELECT inv_id, inv_qty FROM inventory WHERE inv_userid = {$userId} AND inv_id = {$inventoryId}");
     } else if ($familyId > 0) {
-        $result = $db->query("SELECT inv_id, inv_qty FROM inventory WHERE inv_famid = {$familyId} AND inv_id = {$inventoryId}");
+        $result = $application->db->query("SELECT inv_id, inv_qty FROM inventory WHERE inv_famid = {$familyId} AND inv_id = {$inventoryId}");
     }
 
     if (isset($result) && mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
         if ($row['inv_qty'] > $quantity) {
-            $db->query("UPDATE inventory SET inv_qty = inv_qty - {$quantity} WHERE inv_id = {$inventoryId}");
+            $application->db->query("UPDATE inventory SET inv_qty = inv_qty - {$quantity} WHERE inv_id = {$inventoryId}");
         } else {
-            $db->query("DELETE FROM inventory WHERE inv_id = {$inventoryId}");
+            $application->db->query("DELETE FROM inventory WHERE inv_id = {$inventoryId}");
         }
     }
 
@@ -282,9 +286,9 @@ function itemInfo($itemId): string
 
 function itemName($itemId): string
 {
-    global $db;
+    global $application;
 
-    $result = $db->query("SELECT itmid, itmname FROM items WHERE itmid = {$itemId}");
+    $result = $application->db->query("SELECT itmid, itmname FROM items WHERE itmid = {$itemId}");
     $item = mysqli_fetch_assoc($result);
 
     return $item['itmname'];
@@ -343,7 +347,7 @@ function itemType($itemType): string
 
 function itemRandom($rank = 4, $bonus = ''): int
 {
-    global $db;
+    global $application;
 
     $rank = max(0, $rank + rand(0, 3) - 2);
     $search = '';
@@ -381,7 +385,7 @@ function itemRandom($rank = 4, $bonus = ''): int
             break;
     }
 
-    $item = mysqli_fetch_assoc($db->query("SELECT itmid FROM items {$search} ORDER BY RAND() LIMIT 1"));
+    $item = mysqli_fetch_assoc($application->db->query("SELECT itmid FROM items {$search} ORDER BY RAND() LIMIT 1"));
 
     return $item['itmid'];
 }
@@ -452,36 +456,36 @@ function locationName($locationId = 0): string
 
 function logAttack($attackerUserId, $defenderUserId, $result, $shortDescription, $longDescription, $itemId = 0): void
 {
-    global $db;
+    global $application;
 
-    $db->query("INSERT INTO logsAttacks (laAttacker, laDefender, laResult, laTime, laLogShort, laLogLong, laItem) VALUES ({$attackerUserId}, {$defenderUserId}, '{$result}', unix_timestamp(), '{$shortDescription}', '{$longDescription}', {$itemId})");
+    $application->db->query("INSERT INTO logsAttacks (laAttacker, laDefender, laResult, laTime, laLogShort, laLogLong, laItem) VALUES ({$attackerUserId}, {$defenderUserId}, '{$result}', unix_timestamp(), '{$shortDescription}', '{$longDescription}', {$itemId})");
 }
 
 function logEvent($userId, $text): void
 {
-    global $db;
+    global $application;
 
-    $row = mysqli_fetch_assoc($db->query("SELECT `rank` FROM users WHERE userid = {$userId}"));
+    $row = mysqli_fetch_assoc($application->db->query("SELECT `rank` FROM users WHERE userid = {$userId}"));
 
     if ($row['rank'] != 'Giovane' && $row['rank'] != 'Inattivo') {
         $timestamp = strtotime(date('Y-m-d H:i:s'));
-        $db->query("INSERT INTO logsEvents (leUser, leTime, leRead, leText) VALUES ({$userId}, '{$timestamp}', 0, '{$text}')");
-        $db->query("UPDATE users SET newEvents = newEvents + 1 WHERE userid = {$userId}");
+        $application->db->query("INSERT INTO logsEvents (leUser, leTime, leRead, leText) VALUES ({$userId}, '{$timestamp}', 0, \"{$text}\")");
+        $application->db->query("UPDATE users SET newEvents = newEvents + 1 WHERE userid = {$userId}");
     }
 }
 
 function logItem($send, $sendIP, $receive, $receiveIP, $reason, $item, $quantity): void
 {
-    global $db;
+    global $application;
 
-    $db->query("INSERT INTO logsItems (liSender, liSenderIP, liReceiver, liReceiverIP, liReason, liItem, liQuantity, liTime) VALUES({$send}, '{$sendIP}', {$receive}, '{$receiveIP}', '{$reason}', {$item}, {$quantity}, unix_timestamp())");
+    $application->db->query("INSERT INTO logsItems (liSender, liSenderIP, liReceiver, liReceiverIP, liReason, liItem, liQuantity, liTime) VALUES({$send}, '{$sendIP}', {$receive}, '{$receiveIP}', '{$reason}', {$item}, {$quantity}, unix_timestamp())");
 }
 
 function logWealth($send, $sendIP, $receive, $receiveIP, $amount, $type, $source): void
 {
-    global $db;
+    global $application;
 
-    $db->query("INSERT INTO logsWealth (lwSender, lwSenderIP, lwReceiver, lwReceiverIP, lwAmount, lwTime, lwType, lwSource) VALUES ({$send}, '{$sendIP}', {$receive}, '{$receiveIP}', {$amount}, unix_timestamp(), '{$type}', '{$source}')");
+    $application->db->query("INSERT INTO logsWealth (lwSender, lwSenderIP, lwReceiver, lwReceiverIP, lwAmount, lwTime, lwType, lwSource) VALUES ({$send}, '{$sendIP}', {$receive}, '{$receiveIP}', {$amount}, unix_timestamp(), '{$type}', '{$source}')");
 }
 
 function mafioso($mafiosoId): string
@@ -534,18 +538,18 @@ function mafioso($mafiosoId): string
 
 function mafiosoLight($mafiosoId): string
 {
-    global $db, $user;
+    global $application;
 
     if ($mafiosoId == 22) {
         return '<strong>Staff Support</strong>';
     }
 
-    $result = $db->query("SELECT rankCat, watchfulEye, gang, signature, userid, username, gangtitle, fedjail, donatordays, hospital, jail, trackActionTime FROM users WHERE userid = {$mafiosoId}");
+    $result = $application->db->query("SELECT rankCat, watchfulEye, gang, signature, userid, username, gangtitle, fedjail, donatordays, hospital, jail, trackActionTime FROM users WHERE userid = {$mafiosoId}");
     $mafioso = mysqli_fetch_assoc($result);
 
     $we = '';
 
-    if ($mafioso['watchfulEye'] == 1 && $user['rankCat'] == 'Staff') {
+    if ($mafioso['watchfulEye'] == 1 && $application->user['rankCat'] == 'Staff') {
         $we = '<span class=staffview title=\'Super Double Secret Probation\'>&#920;&nbsp;</span>';
     }
     if ($mafioso['rankCat'] == 'Staff') {
@@ -561,10 +565,10 @@ function mafiosoLight($mafiosoId): string
 
 function mafiosoMenu($name = "mafioso", $additional = ""): string
 {
-    global $db;
+    global $application;
 
     $menu = '<select name=\'' . $name . '\' type=dropdown>';
-    $result = $db->query("SELECT userid, username FROM users WHERE `rank` NOT IN ('Giovane', 'Inattivo') {$additional} ORDER BY username");
+    $result = $application->db->query("SELECT userid, username FROM users WHERE `rank` NOT IN ('Giovane', 'Inattivo') {$additional} ORDER BY username");
 
     while ($row = mysqli_fetch_assoc($result)) {
         $menu .= '<option value=\'' . $row['userid'] . '\'>' . $row['username'] . ' [' . $row['userid'] . ']</option>';
@@ -577,26 +581,27 @@ function mafiosoMenu($name = "mafioso", $additional = ""): string
 
 function mafiosoName($mafiosoId = 0): string
 {
-    global $db;
+    global $application;
 
     if ($mafiosoId == 22) {
         return '<strong>Staff Support</strong>';
     }
-    $row = mysqli_fetch_assoc($db->query("SELECT username FROM users WHERE userid = {$mafiosoId}"));
+
+    $row = mysqli_fetch_assoc($application->db->query("SELECT username FROM users WHERE userid = {$mafiosoId}"));
 
     return $row['username'];
 }
 
 function mailMafioso($from, $to, $subject, $text): void
 {
-    global $db;
+    global $application;
 
     if ($to == 22) {
-        $db->query("INSERT INTO mail (mail_read, mail_from, mail_to, mail_time, mail_subject, mail_text, mail_directory) VALUES (0, {$from}, {$to}, unix_timestamp(), '{$subject}', '{$text}', 'Staff')");
-        $db->query("UPDATE users SET newMail = newMail + 1 WHERE rankCat = 'Staff'");
+        $application->db->query("INSERT INTO mail (mail_read, mail_from, mail_to, mail_time, mail_subject, mail_text, mail_directory) VALUES (0, {$from}, {$to}, unix_timestamp(), '{$subject}', '{$text}', 'Staff')");
+        $application->db->query("UPDATE users SET newMail = newMail + 1 WHERE rankCat = 'Staff'");
     } else {
-        $db->query("INSERT INTO mail (mail_read, mail_from, mail_to, mail_time, mail_subject, mail_text, mail_directory) VALUES (0, {$from}, {$to}, unix_timestamp(), '{$subject}', '{$text}', 'Inbox')");
-        $db->query("UPDATE users SET newMail = newMail + 1 WHERE userid = {$to}");
+        $application->db->query("INSERT INTO mail (mail_read, mail_from, mail_to, mail_time, mail_subject, mail_text, mail_directory) VALUES (0, {$from}, {$to}, unix_timestamp(), '{$subject}', '{$text}', 'Inbox')");
+        $application->db->query("UPDATE users SET newMail = newMail + 1 WHERE userid = {$to}");
     }
 }
 
@@ -670,7 +675,7 @@ function mysql_tex_out($var): string
 
 function newsPost($user, $article = 0, $image = 0, $blue = 0): void
 {
-    global $db;
+    global $application;
 
     $article = str_ireplace("asshole", 'ass', $article);
     $article = str_ireplace("chink", 'pile of junk', $article);
@@ -680,8 +685,8 @@ function newsPost($user, $article = 0, $image = 0, $blue = 0): void
     $article = str_ireplace("nigger", 'pile of junk', $article);
     $article = str_ireplace("pussy", 'wus', $article);
 
-    $db->query("INSERT INTO news (newsFrom, newsTime, newsText, newsImage, newsBlueRoom, newsDelete) VALUES ({$user}, unix_timestamp(), '{$article}', '{$image}', {$blue}, 0)");
-    $db->query("UPDATE users SET newNews = newNews + 1 WHERE userid != {$user['userid']}");
+    $application->db->query("INSERT INTO news (newsFrom, newsTime, newsText, newsImage, newsBlueRoom, newsDelete) VALUES ({$user}, unix_timestamp(), \"{$article}\", \"{$image}\", {$blue}, 0)");
+    $application->db->query("UPDATE users SET newNews = newNews + 1 WHERE userid != {$user}");
 }
 
 function pagePermission($mustLogin = 0, $staff = 0, $noJail = 0, $noHospital = 0, $lockdown = 0): void
@@ -736,33 +741,34 @@ function pagePermission($mustLogin = 0, $staff = 0, $noJail = 0, $noHospital = 0
 
 function setWillpower($userId = 0): void
 {
-    global $db, $user;
+    global $application;
 
     if ($userId == 0) {
-        $userId = $user['userid'];
+        $userId = $application->user['userid'];
     }
-    $row = mysqli_fetch_assoc($db->query("SELECT SUM(inv_qty) as countPF FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 120"));
+
+    $row = mysqli_fetch_assoc($application->db->query("SELECT SUM(inv_qty) as countPF FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 120"));
     $pf = $row['countPF'] * 1000 + 100;
 
-    $db->query("UPDATE users SET maxwill = {$pf} + (residence_total * 50) WHERE userid = {$userId}");
-    $db->query("UPDATE users SET will = maxwill WHERE will > maxwill AND userid = {$userId}");
+    $application->db->query("UPDATE users SET maxwill = {$pf} + (residence_total * 50) WHERE userid = {$userId}");
+    $application->db->query("UPDATE users SET will = maxwill WHERE will > maxwill AND userid = {$userId}");
 }
 
 function staffLogAdd($text): void
 {
-    global $db, $user;
+    global $application;
 
-    $ipAddress = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
-    $text = mysqli_real_escape_string($db, $text);
+    $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'];
+    $text = mysqli_real_escape_string($application->db, $text);
 
-    $db->query("INSERT INTO stafflog (user, time, action, ip) VALUES ({$user['userid']}, unix_timestamp(), '{$text}', '{$ipAddress}')");
+    $application->db->query("INSERT INTO stafflog (user, time, action, ip) VALUES ({$application->user['userid']}, unix_timestamp(), '{$text}', '{$ipAddress}')");
 }
 
 function status($mafiosoId): string
 {
-    global $db, $user;
+    global $application;
 
-    $mafioso = mysqli_fetch_assoc($db->query("SELECT trackActionTime, `rank`, rankCat FROM users WHERE userid = {$mafiosoId}"));
+    $mafioso = mysqli_fetch_assoc($application->db->query("SELECT trackActionTime, `rank`, rankCat FROM users WHERE userid = {$mafiosoId}"));
     $la = time() - $mafioso['trackActionTime'];
     $unit = 'sec';
 
@@ -787,7 +793,7 @@ function status($mafiosoId): string
     if ($mafioso['rank'] == 'Associate') {
         return '<font class=offline>Associate</font>';
     }
-    if ($mafioso['rankCat'] == 'Staff' && $user['rankCat'] == 'Player') {
+    if ($mafioso['rankCat'] == 'Staff' && $application->user['rankCat'] == 'Player') {
         return '<font class=staffer>Watching</font>';
     }
     if ($mafioso['rank'] == 'Inattivo') {
@@ -808,9 +814,9 @@ function status($mafiosoId): string
 
 function unauthorized($mafiosoId, $severity): void
 {
-    global $db, $headers;
+    global $application;
 
-    $result = $db->query("SELECT email FROM users WHERE userid = {$mafiosoId}");
+    $result = $application->db->query("SELECT email FROM users WHERE userid = {$mafiosoId}");
     $mafioso = mysqli_fetch_assoc($result);
     $email = $mafioso['email'];
     $headers = "From: boomer@firstmafiawar.com\r\n";
@@ -818,17 +824,17 @@ function unauthorized($mafiosoId, $severity): void
 
     if ($severity == 3) {
         print '<p>You are NOT authorized to view this page.</p><p>No soup for you!</p>';
-        $db->query("UPDATE users SET login_name = '', force_logout = 1 WHERE userid = {$mafiosoId}");
+        $application->db->query("UPDATE users SET login_name = '', force_logout = 1 WHERE userid = {$mafiosoId}");
         $body = 'Please do not attempt to view or otherwise access areas of the game that you do not have permission to access. If it was a mistake, no problem, but it is going on your permanent record for future reference.\n\nYour login has been disabled until you contact me and we sort out the details.\n\n-Boomer';
         staffLogAdd(mafiosoLight($mafiosoId) . " has had their account suspended.");
     } else if ($severity == 2) {
         print '<p>You are NOT authorized to view this page.</p><p>Bad Monkey, no banana.</p>';
-        $db->query("UPDATE users SET fedjail = 1, fedjailReason = '4) Attempted Unauthorized Access' WHERE userid = {$mafiosoId}");
+        $application->db->query("UPDATE users SET fedjail = 1, fedjailReason = '4) Attempted Unauthorized Access' WHERE userid = {$mafiosoId}");
         $body = 'Please do not attempt to view or otherwise access areas of the game that you do not have permission to access. If it was a mistake, no problem, but it is going on your permanent record for future reference.\n\nYou were logged out and placed in federal jail until midnight mafia time.\n\n-Boomer';
         staffLogAdd(mafiosoLight($mafiosoId) . " has been placed in fedjail.");
     } else {
         print '<p>You are not authorized to view this page.</p><p>Please go somewhere else.</p>';
-        $db->query("UPDATE users SET force_logout = 1 WHERE userid = {$mafiosoId}");
+        $application->db->query("UPDATE users SET force_logout = 1 WHERE userid = {$mafiosoId}");
         $body = 'Please do not attempt to view or otherwise access areas of the game that you do not have permission to access. If it was a mistake, no problem, but it is going on your permanent record for future reference.\n\nYou were logged out, but you can get back in anytime.\n\n-Boomer';
     }
 
@@ -836,7 +842,7 @@ function unauthorized($mafiosoId, $severity): void
         staffLogAdd(mafiosoLight($mafiosoId) . " viewed an unauthorized page.");
     }
 
-    $headers->endPage();
+    $application->header->endPage();
     exit;
 }
 

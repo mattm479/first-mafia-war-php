@@ -4,14 +4,14 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action     = isset($_GET['act']) ? mysql_tex($_GET['act']) : '';
 $from       = isset($_POST['from']) ? mysql_tex($_POST['from']) : '';
 $to         = isset($_POST['to']) ? mysql_tex($_POST['to']) : '';
 $amount     = isset($_POST['amount']) ? mysql_num($_POST['amount']) : 0;
-$courseDone = mysqli_fetch_assoc($db->query("SELECT userid FROM coursesdone WHERE courseid = 32 AND userid = {$userId}"));
+$courseDone = mysqli_fetch_assoc($application->db->query("SELECT userid FROM coursesdone WHERE courseid = 32 AND userid = {$application->user['userid']}"));
 $invest     = 'no';
 $bankHours  = array(
     "Sunday" => "Closed",
@@ -23,12 +23,12 @@ $bankHours  = array(
     "Saturday" => array("Open" => "09", "Close" => "12")
 );
 
-if (isset($courseDone['userid']) && $courseDone['userid'] == $userId) {
+if (isset($courseDone['userid']) && $courseDone['userid'] == $application->user['userid']) {
     $invest = 'yes';
 }
 
 print '
-    <h3>Banking</h3>
+    <h3>First Mafia War Bank</h3>
     <div class=floatright>
         <img src=\'assets/images/photos/bank.jpg\' width=200 height=310 alt=\'Nice Teller\'>
     </div>
@@ -36,13 +36,13 @@ print '
 
 switch ($action) {
     case "clear":
-        clear($db, $user, $userId);
+        clear($application->db, $application->user, $application->user['userid']);
         break;
     case "transfer":
-        transfer($db, $headers, $user, $userId, $amount, $from, $to, $invest);
+        transfer($application->db, $application->header, $application->user, $application->user['userid'], $amount, $from, $to, $invest);
         break;
     default:
-        show_list($user, $invest);
+        show_list($application->user, $invest);
         break;
 }
 
@@ -254,4 +254,4 @@ function validate_transfer(Database $db, array $user, int $userId, int $amount, 
     return $message;
 }
 
-$headers->endpage();
+$application->header->endPage();

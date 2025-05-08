@@ -47,7 +47,7 @@ class Application implements ApplicationInterface
     {
         $config = require '../config/application.php';
         $this->db = new Database($config['database']);
-        $this->loadUser($_SESSION['userId']);
+        $this->loadUser($_SESSION['userId'] ?? 664);
         $this->loadSettings();
         $this->header = new Header($this->db, $this->user, $this->settings);
         $this->logger = new Logger(self::LogName);

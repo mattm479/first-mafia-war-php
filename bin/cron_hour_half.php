@@ -1,11 +1,12 @@
 <?php
 require_once "../vendor/autoload.php";
 
-use Fmw\Database;
+use Fmw\Application;
 
-$config = require "../config/application.php";
+$application = new Application();
+$db = $application->db;
+
 require_once "../public/global_func.php";
-$db = new Database($config['database']);
 
 // Random Associate Activity 
 $rndAssociate = rand(1, 12);
@@ -268,5 +269,3 @@ if ($rndAssociate == 10) {
     newsPost(19, "{$post}");
     $db->query("UPDATE users SET trackActionTime = unix_timestamp() WHERE userid = 19");
 }
-
-$db->close();
