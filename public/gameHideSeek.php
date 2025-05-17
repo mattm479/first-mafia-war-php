@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 1, $nhsp = 1, $nlck = 1);
 
 $action = isset($_POST['actn']) ? mysql_tex($_POST['actn']) : '';
@@ -16,7 +16,7 @@ print '
         <strong>Current Mafioso in Hiding</strong><br>
 ';
 
-$qhide = $db->query("SELECT userid, hideLocation FROM users WHERE hideLocation != '0' ORDER BY username");
+$qhide = $application->db->query("SELECT userid, hideLocation FROM users WHERE hideLocation != '0' ORDER BY username");
 while ($rhide = mysqli_fetch_assoc($qhide)) {
     print ' &nbsp; ' . mafiosoLight($rhide['userid']);
     if ($userId == 1) {
@@ -35,16 +35,16 @@ print '
 
 switch ($action) {
     case 'hide':
-        hide($db, $userId, $hide);
+        hide($application->db, $userId, $hide);
         break;
     case 'play':
-        play($db, $headers, $user, $userId);
+        play($application->db, $application->header, $application->user, $userId);
         break;
     case 'seek':
-        seek($db, $headers, $user, $userId, $hide);
+        seek($application->db, $application->header, $application->user, $userId, $hide);
         break;
     default:
-        index($user);
+        index($application->user);
         break;
 }
 
@@ -138,4 +138,4 @@ function seek(Database $db, Header $headers, array $user, int $userId, string $h
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -13,13 +13,13 @@ $spend = isset($_GET['spend']) ? mysql_tex($_GET['spend']) : '';
 
 switch ($action) {
     case "rescut":
-        respect_cut($db, $user, $userId, $getID);
+        respect_cut($application->db, $application->user, $userId, $getID);
         break;
     case "resgift":
-        respect_gift($db, $headers, $user, $userId, $getID);
+        respect_gift($application->db, $application->header, $application->user, $userId, $getID);
         break;
     default:
-        use_respect($db, $headers, $user, $userId, $spend);
+        use_respect($application->db, $application->header, $application->user, $userId, $spend);
         break;
 }
 
@@ -127,4 +127,4 @@ function use_respect(Database $db, Header $headers, array $user, int $userId, st
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

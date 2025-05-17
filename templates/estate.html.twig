@@ -1,0 +1,28 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Estate Agent</h3>
+    <div class=floatright>
+        <img src='assets/images/photos/livingRoom.jpg' width=250 height=284 alt='Living Room'>
+    </div>
+    {% if data.error == "NO_AUTO" %}
+        <p>You cannot buy a fine home to live in if you do not have some form of transportation! Yes, yes, I know many city dwellers do not have cars due to the inconvenience, but you are a Mafioso! You inconvenience others!</p>
+        <p>As if you would ride a bus with the business stiffs.</p>
+        <p><a href='explore.php'>Back to town</a></p>
+    {% else %}
+        {% if data.house == 'hovel' %}
+            <p>Your current property is a simple hovel which holds barely enough willpower to get up in the morning. You really should consider buying a better house if you can afford it.</p>
+            <br>
+        {% else %}
+            <p>Here in {{ data.location }} your current property is the <strong>{{ data.house }}</strong> which contains up to {{ data.willpower }} willpower. To purchase a better home, gather your cash, and click on a residence below.</p>
+            <p>If you wish, you may also <a href='estate.php?action=sell&property={{ data.houseId }}'><strong>sell your residence</strong></a> in this city and move back to your hovel. The sale price will be 80% of the purchase price due to realty fees, taxes, and the generally run down condition of your home.</p>
+            <p>You need enough cash on hand to buy a new residence. However, your old residences sale price will be refunded to you when you upgrade.</p>
+            <br>
+        {% endif %}
+        {% for house in data.houses %}
+            <a href='estate.php?action=buy&property={{ house.hID }}'>{{ house.hNAME }} ({{ house.willpower }})</a>&nbsp;&nbsp;&middot;{{ house.price }}<br>
+        {% endfor %}
+        <br>
+        <p>When you buy your new home, your willpower maximum may not increase immediately. One must walk through the home for a moment, and savor the experience. Be patient.</p>
+    {% endif %}
+{% endblock %}

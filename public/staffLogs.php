@@ -4,43 +4,43 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "sglobals.php";
-global $db, $headers, $user, $userId;
+global $application;
 pagePermission($lgn = 1, $stff = 1, $njl = 0, $nhsp = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
 $st = isset($_GET['st']) ? mysql_num($_GET['st']) : 0;
 
-if ($user['rankCat'] != 'Staff') {
+if ($application->user['rankCat'] != 'Staff') {
     print "<p>You must be a member of the staff to view these logs.</p>";
 
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
 switch ($action) {
     case 'attlog':
-        attack_logs($db, $headers, $user, $st);
+        attack_logs($application->db, $application->header, $application->user, $st);
         break;
     case 'donlog':
-        donation_logs($db, $headers, $user, $st);
+        donation_logs($application->db, $application->header, $application->user, $st);
         break;
     case 'eventlogs':
-        view_event_logs($db, $user, $st);
+        view_event_logs($application->db, $application->user, $st);
         break;
     case 'itmlogs':
-        view_itm_logs($db, $user, $st);
+        view_itm_logs($application->db, $application->user, $st);
         break;
     case 'maillogs':
-        view_mail_logs($db, $headers, $user, $st);
+        view_mail_logs($application->db, $application->header, $application->user, $st);
         break;
     case 'referrals':
-        view_referrals_logs($db, $headers, $user);
+        view_referrals_logs($application->db, $application->header, $application->user);
         break;
     case 'stafflogs':
-        view_staff_logs($db, $headers, $user, $st);
+        view_staff_logs($application->db, $application->header, $application->user, $st);
         break;
     case 'wealthlogs':
-        view_wealth_logs($db, $headers, $user, $st);
+        view_wealth_logs($application->db, $application->header, $application->user, $st);
         break;
     default:
         print "Error: This script requires an action.";
@@ -536,4 +536,4 @@ function view_wealth_logs(Database $db, Header $headers, array $user, int $st): 
     staffLogAdd("Viewed Wealth Logs");
 }
 
-$headers->endpage();
+$application->header->endPage();

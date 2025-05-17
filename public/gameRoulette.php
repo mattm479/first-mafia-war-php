@@ -1,11 +1,11 @@
 <?php
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 1, $nhsp = 1, $nlck = 1);
 
 $tresder = rand(100, 999);
-$maxbet = $user['level'] * 125;
+$maxbet = $application->user['level'] * 125;
 $_GET['tresde'] = abs((int)$_GET['tresde']);
 
 print '
@@ -24,7 +24,7 @@ if (($_SESSION['tresde'] == $_GET['tresde']) || $_GET['tresde'] < 100) {
         </form>
     ";
 
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
@@ -34,7 +34,7 @@ $_GET['bet'] = str_replace($bs, '', $_GET['bet']);
 $_GET['number'] = abs((int)$_GET['number']);
 
 if ($_GET['bet']) {
-    if ($_GET['bet'] > $user['money']) {
+    if ($_GET['bet'] > $application->user['money']) {
         die("You are trying to bet more than you have.<br /><a href='gameRoulette.php?tresde=$tresder'>&gt; Back</a>");
     } else if ($_GET['bet'] > $maxbet) {
         die("You have gone over the max bet.<br /><a href='gameRoulette.php?tresde=$tresder'>&gt; Back</a>");
@@ -61,7 +61,7 @@ if ($_GET['bet']) {
         print "and lost it all.</p>";
     }
 
-    $db->query("UPDATE users SET money = money + {$gain} where userid = {$userId}");
+    $application->db->query("UPDATE users SET money = money + {$gain} where userid = {$userId}");
     $tresder = rand(100, 999);
 
     print "
@@ -83,4 +83,4 @@ if ($_GET['bet']) {
     ";
 }
 
-$headers->endpage();
+$application->header->endPage();

@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $act = isset($_GET['act']) ? mysql_tex($_GET['act']) : '';
@@ -17,44 +17,44 @@ $tx3 = isset($_POST['tx3']) ? mysql_tex($_POST['tx3']) : '';
 
 print '<h3>First Mafia War Forums</h3>';
 
-if ($user['gagOrder']) {
+if ($application->user['gagOrder']) {
     print '
         <h3 style=\'font-color:red;\'>Gag Order in force</h3>
-        <p>You have been banned from communicating with others for ' . $user['gagOrder'] . ' more hours.</p>
-        <p>The main reason was ' . $user['gagReason'] . '. I\'m sure there were others as well that went undocumented. Try and be more polite please.</p>
+        <p>You have been banned from communicating with others for ' . $application->user['gagOrder'] . ' more hours.</p>
+        <p>The main reason was ' . $application->user['gagReason'] . '. I\'m sure there were others as well that went undocumented. Try and be more polite please.</p>
     ';
     
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
 switch ($act) {
     case 'vforum':
-        view_forum($db, $headers, $user, $userId, $fid);
+        view_forum($application->db, $application->header, $application->user, $userId, $fid);
         break;
     case 'vtopic':
-        view_topic($db, $headers, $user, $userId, $eid, $fid, $stt);
+        view_topic($application->db, $application->header, $application->user, $userId, $eid, $fid, $stt);
         break;
     case 'ctopic':
-        create_topic($db, $headers, $user, $userId, $fid, $tx1, $tx2, $tx3);
+        create_topic($application->db, $application->header, $application->user, $userId, $fid, $tx1, $tx2, $tx3);
         break;
     case 'cposts':
-        create_post($db, $headers, $user, $userId, $fid, $tx1);
+        create_post($application->db, $application->header, $application->user, $userId, $fid, $tx1);
         break;
     case 'eposts':
-        edit_post($db, $headers, $user, $userId, $fid, $tx1);
+        edit_post($application->db, $application->header, $application->user, $userId, $fid, $tx1);
         break;
     case 'dforum':
-        delete_forum($db, $fid);
+        delete_forum($application->db, $fid);
         break;
     case 'dtopic':
-        delete_topic();
+        delete_topic($application->db, $application->header, $application->user, $fid);
         break;
     case 'dposts':
-        delete_post();
+        delete_post($application->db, $application->header, $application->user, $userId, $fid);
         break;
     default:
-        index($db, $user);
+        index($application->db, $application->user);
         break;
 }
 
@@ -428,4 +428,4 @@ print '
     <div align=center><img src=\'assets/images/photos/forums.jpg\' width=400 height=210 alt=Connections></div>
 ';
 
-$headers->endpage();
+$application->header->endPage();

@@ -1,7 +1,7 @@
 <?php
 
 require_once "globals.php";
-global $db, $headers;
+global $application;
 
 print '
     <h3>Federal Jail</h3>
@@ -14,7 +14,7 @@ print '
         </tr>
 ';
 
-$query = $db->query("SELECT userid, username, fedjail, fedjailReason FROM users WHERE fedjail > 0 ORDER BY fedjail, username");
+$query = $application->db->query("SELECT userid, username, fedjail, fedjailReason FROM users WHERE fedjail > 0 ORDER BY fedjail, username");
 while ($row = mysqli_fetch_assoc($query)) {
     print '
         <tr>
@@ -27,4 +27,4 @@ while ($row = mysqli_fetch_assoc($query)) {
 
 print '</table><br><br>';
 
-$headers->endpage();
+$application->header->endPage();

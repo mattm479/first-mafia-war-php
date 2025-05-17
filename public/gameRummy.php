@@ -3,7 +3,7 @@
 // http://www.hawkenterprises.org
 
 require_once "globals.php";
-global $headers;
+global $application;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $bs = '';
@@ -98,7 +98,7 @@ if ($round2) {
     if ($fold) {
         print "<p>You have folded and lost $bet.</p>";
 
-        $headers->endpage();
+        $application->header->endPage();
         exit;
     }
 
@@ -203,4 +203,4 @@ function calculate_score($hand)
     return $hand[0]['points'] + $hand[1]['points'] + $hand[2]['points'];
 }
 
-$headers->endpage();
+$application->header->endPage();

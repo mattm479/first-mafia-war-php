@@ -1,0 +1,41 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>County Jail</h3>
+    <div class=floatright>
+        <br><br><br>
+        <img src='assets/images/photos/prison.jpg' width=100 height=236 alt=Jailed>
+        {% if data.user.jail > 0 %}
+            <p>
+                &nbsp; <a href='family.php?action=list'>Family Table</a><br>
+                &nbsp; <a href='raffle.php'>Play the Raffle</a><br>
+                &nbsp; <a href='education.php'>Look for a Mentor</a><br>
+                &nbsp; <a href='gym.php'>Work out</a><br>
+                &nbsp; <a href='statistics.php'>Statistics</a><br>
+                &nbsp; <a href='statisticsTopMafia.php'>Top Mafia</a><br>
+                &nbsp; <a href='statisticsSpecial.php'>Special Gear</a><br>
+            </p>
+        {% endif %}
+    </div>
+    <br>
+    <table width=80% class=table cellspacing=0 cellpadding=2 style='font-size:smaller;'>
+        <tr>
+            <th style='text-align:left;'>Mafioso</th>
+            <th style='text-align:left;'>Reason</th>
+            <th>Time</th>
+            <th>Actions</th>
+        </tr>
+        {% for inmate in data.inmates %}
+            <tr>
+                <td>{{ inmate.mafioso|raw }}</td>
+                <td>{{ inmate.reason|raw }}</td>
+                <td class=center>{{ inmate.time_remaining }}</td>
+                <td class=center>
+                    {% for action in inmate.actions %}
+                        {{ action|raw }}
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

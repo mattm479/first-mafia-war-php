@@ -2,31 +2,18 @@
 session_start();
 require_once "../vendor/autoload.php";
 
-use Fmw\Database;
-use Fmw\Header;
+use Fmw\Application;
 
 require_once "global_func.php";
-require_once "../config/database.php";
-global $_CONFIG;
-
-$db = new Database($_CONFIG['hostname'], $_CONFIG['username'], $_CONFIG['password'], $_CONFIG['database']);
-$user = mysqli_fetch_assoc($db->query("SELECT u.*, us.* FROM users u INNER JOIN userstats us WHERE u.userid = {$_SESSION['userId']}"));
-$query = $db->query("SELECT conf_name, conf_value FROM settings");
-
-$settings = array();
-while ($row = mysqli_fetch_assoc($query)) {
-    $settings[$row['conf_name']] = $row['conf_value'];
-}
-
-$headers = new Header($db, $user, $settings);
+$application = new Application();
 
 if ($_SESSION['loggedin'] == 0) {
     header("Location: index.php");
     exit;
 }
 
-if ($user['force_logout']) {
-    $db->query("UPDATE users SET force_logout = 0 WHERE userid = {$user['userid']}");
+if ($application->user['force_logout']) {
+    $application->db->query("UPDATE users SET force_logout = 0 WHERE userid = {$application->user['userid']}");
 
     session_unset();
     session_destroy();
@@ -35,23 +22,23 @@ if ($user['force_logout']) {
     exit;
 }
 
-if ($user['rankCat'] != 'Staff') {
+if ($application->user['rankCat'] != 'Staff') {
     print "Access Denied";
 
-    $headers->endPage();
+    $application->header->endPage();
     exit;
 }
 
-checkLevel();
+checkLevel($application);
 
-$fm = moneyFormatter($user['money']);
-$bm = moneyFormatter($user['money'] + $user['moneyChecking']);
-$cm = moneyFormatter($user['respect'], '');
-$lv = date('F j, Y, g:i a', $user['trackActionTime']);
+$fm = moneyFormatter($application->user['money']);
+$bm = moneyFormatter($application->user['money'] + $application->user['moneyChecking']);
+$cm = moneyFormatter($application->user['respect'], '');
+$lv = date('F j, Y, g:i a', $application->user['trackActionTime']);
 
 $staffPage = 1;
 $userId = $_SESSION['userId'];
 
-$headers->startHeaders();
-$headers->userData();
-$headers->staffMenuArea();
+$application->header->startHeaders();
+$application->header->userData();
+$application->header->staffMenuArea();

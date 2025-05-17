@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
 $myFamilyId = isset($_GET['ID']) ? mysql_num($_GET['ID']) : 0;
@@ -18,17 +18,17 @@ $location = isset($_POST['loca']) ? mysql_num($_POST['loca']) : 0;
 
 switch ($action) {
     case 'apps':
-        family_applications($db, $user, $userId, $dId, $familyId, $mafiosoId);
+        family_applications($application->db, $application->user, $userId, $dId, $familyId, $mafiosoId);
         break;
     case 'create':
-        family_create($db, $headers, $user, $userId, $location, $name, $description);
+        family_create($application->db, $application->header, $application->user, $userId, $location, $name, $description);
         break;
     case 'view':
-        family_view($db, $headers, $userId, $myFamilyId);
+        family_view($application->db, $application->header, $userId, $myFamilyId);
         break;
     case 'list':
     default:
-        family_list($db, $userId);
+        family_list($application->db, $userId);
         break;
 }
 
@@ -299,4 +299,4 @@ function family_view(Database $db, Header $headers, int $userId, int $myFamilyId
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

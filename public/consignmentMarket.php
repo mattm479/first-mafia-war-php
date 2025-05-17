@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 1, $nhsp = 1, $nlck = 1);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -23,16 +23,16 @@ print '
 
 switch ($action) {
     case "add":
-        add($db, $headers, $user, $userId, $ID, $AID, $currency, $price);
+        add($application->db, $application->header, $application->user, $userId, $ID, $AID, $currency, $price);
         break;
     case "buy":
-        buy();
+        buy($application->db, $application->header, $application->user, $userId, $ID);
         break;
     case "remove":
-        remove();
+        remove($application->db, $application->header, $userId, $ID);
         break;
     default:
-        index($db, $userId);
+        index($application->db, $userId);
         break;
 }
 
@@ -234,4 +234,4 @@ function remove(Database $db, Header $headers, int $userId, int $ID): void
     ';
 }
 
-$headers->endPage();
+$application->header->endPage();

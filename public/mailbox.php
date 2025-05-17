@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $ID = isset($_GET['ID']) ? mysql_num($_GET['ID']) : 0;
@@ -19,19 +19,19 @@ $message = isset($_POST['message']) ? mysql_tex($_POST['message']) : '';
 $forward = isset($_POST['forward']) ? mysql_tex($_POST['forward']) : '';
 $mailTo = isset($_POST['mailTo']) ? mysql_num($_POST['mailTo']) : 0;
 
-$smail = mysqli_fetch_assoc($db->query("SELECT mail_id FROM mail WHERE mail_directory = 'Staff'"));
+$smail = mysqli_fetch_assoc($application->db->query("SELECT mail_id FROM mail WHERE mail_directory = 'Staff'"));
 if ($red == 1) {
-    $db->query("UPDATE mail SET mail_directory = 'General' WHERE mail_id = {$redID}");
+    $application->db->query("UPDATE mail SET mail_directory = 'General' WHERE mail_id = {$redID}");
 }
 
-if ($user['gagOrder']) {
+if ($application->user['gagOrder']) {
     print '
         <h3 style=\'font-color:red;\'>Gag Order in force</h3>
-        <p>You have been banned from communicating with others for ' . $user['gagOrder'] . ' more hours.</p>
-        <p>The main reason was ' . $user['gagReason'] . '. I\'m sure there were others as well that went undocumented. Try and be more polite please.</p>
+        <p>You have been banned from communicating with others for ' . $application->user['gagOrder'] . ' more hours.</p>
+        <p>The main reason was ' . $application->user['gagReason'] . '. I\'m sure there were others as well that went undocumented. Try and be more polite please.</p>
     ';
 
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
@@ -46,7 +46,7 @@ print '
     <a href=\'mailbox.php?action=read&directory=Archive\'>Archive</a>
 ';
 
-if ($user['rankCat'] == 'Staff' && $smail != null && $smail['mail_id'] > 0) {
+if ($application->user['rankCat'] == 'Staff' && $smail != null && $smail['mail_id'] > 0) {
     print ' &nbsp;&middot;&nbsp; <a href=\'mailbox.php?action=read&directory=Staff\'><strong>Staff Mail</strong></a><br>';
 } else {
     print '<br>';
@@ -54,17 +54,17 @@ if ($user['rankCat'] == 'Staff' && $smail != null && $smail['mail_id'] > 0) {
 
 switch ($action) {
     case 'compose':
-        mail_compose($db, $userId, $ID, $ID2);
+        mail_compose($application->db, $userId, $ID, $ID2);
         break;
     case 'directory':
-        mail_directory($db, $userId, $ID, $dir);
+        mail_directory($application->db, $userId, $ID, $dir);
         break;
     case 'send':
-        mail_send($db, $headers, $userId, $mailTo, $subject, $message, $forward);
+        mail_send($application->db, $application->header, $userId, $mailTo, $subject, $message, $forward);
         break;
     case 'read':
     default:
-        mail_read($db, $user, $userId, $directory);
+        mail_read($application->db, $application->user, $userId, $directory);
         break;
 }
 
@@ -216,4 +216,4 @@ function mail_send(Database $db, Header $headers, int $userId, int $mailTo, stri
     ';
 }
 
-$headers->endpage();
+$application->header->endPage();

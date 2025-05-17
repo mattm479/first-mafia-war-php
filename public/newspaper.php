@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -13,21 +13,21 @@ $article = isset($_POST['article']) ? mysql_tex($_POST['article']) : '';
 $blue = isset($_POST['blue']) ? mysql_tex($_POST['blue']) : '';
 $comic = isset($_POST['comic']) ? mysql_tex($_POST['comic']) : '';
 
-if ($user['gagOrder']) {
+if ($application->user['gagOrder']) {
     print '
         <h3 style=\'font-color:red;\'>Gag Order in force</h3>
-        <p>You have been banned from communicating with others for ' . $user['gagOrder'] . ' more hours.</p>
-        <p>The main reason was ' . $user['gagReason'] . '. I\'m sure there were others as well that went undocumented. Try and be more polite please.</p>
+        <p>You have been banned from communicating with others for ' . $application->user['gagOrder'] . ' more hours.</p>
+        <p>The main reason was ' . $application->user['gagReason'] . '. I\'m sure there were others as well that went undocumented. Try and be more polite please.</p>
     ';
 
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
-$inv = mysqli_fetch_assoc($db->query("SELECT inv_itemid FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 636"));
-$fee = ($user['level'] * 15);
+$inv = mysqli_fetch_assoc($application->db->query("SELECT inv_itemid FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 636"));
+$fee = ($application->user['level'] * 15);
 $ftxt = 'Just ' . moneyFormatter($fee) . ' to post.';
-if ($inv['inv_itemid'] == 636 || $user['jail'] || $user['hospital']) {
+if ($inv['inv_itemid'] == 636 || $application->user['jail'] || $application->user['hospital']) {
     $ftxt = 'Currently free to post.';
     $fee = 0;
 }
@@ -37,24 +37,24 @@ print '
     <p>Welcome to your local paper. The articles come and go, but disrespect lasts forever. ' . $ftxt . '<br>
 ';
 
-$db->query("UPDATE users SET newNews = 0 WHERE userid = {$userId}");
+$application->db->query("UPDATE users SET newNews = 0 WHERE userid = {$userId}");
 
 switch ($action) {
     case "bluepost":
-        bluepost($db, $user, $postID);
+        bluepost($application->db, $application->user, $postID);
         break;
     case "blueroom":
-        blueroom($db, $user, $userId);
+        blueroom($application->db, $application->user, $userId);
         break;
     case "delete":
-        delete($db, $user, $postID);
+        delete($application->db, $application->user, $postID);
         break;
     case "post":
-        post($db, $headers, $user, $userId, $article, $comic, $blue, $fee);
+        post($application->db, $application->header, $application->user, $userId, $article, $comic, $blue, $fee);
         break;
     case "read":
     default:
-        read($db, $user, $userId);
+        read($application->db, $application->user, $userId);
         break;
 }
 
@@ -257,4 +257,4 @@ function post(Database $db, Header $headers, array $user, int $userId, string $a
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

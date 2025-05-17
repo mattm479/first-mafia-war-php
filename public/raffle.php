@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action     = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -16,7 +16,7 @@ print '
     <p>The winning raffle ticket will be drawn daily around noon. Chances of winning are based entirely on the number of tickets purchased. Each ticket costs only 
 ';
 
-if ($user['hospital'] > 1) {
+if ($application->user['hospital'] > 1) {
     print '$24,000 from the candy stripers - what a deal!';
 } else {
     print '$29,000.';
@@ -32,10 +32,10 @@ print '
 
 switch ($action) {
     case "buy":
-        buy_ticket($db, $headers, $user, $userId, $raffleid, $tickets);
+        buy_ticket($application->db, $application->header, $application->user, $userId, $raffleid, $tickets);
         break;
     default:
-        index($db, $user, $userId);
+        index($application->db, $application->user, $userId);
         break;
 }
 
@@ -54,9 +54,9 @@ function index(Database $db, array $user, int $userId): void
     ';
 
     if ($user['rankCat'] == 'Staff') {
-        $query = $db->query("SELECT raID, raName, raItem FROM raffle WHERE raDaysLeft > 0 ORDER BY raDaysLeft");
+        $query = $db->query("SELECT raID, raName, raItem, raDaysLeft FROM raffle WHERE raDaysLeft > 0 ORDER BY raDaysLeft");
     } else {
-        $query = $db->query("SELECT raID, raName, raItem FROM raffle WHERE raDaysLeft > 0 AND raDaysLeft < 6 ORDER BY raDaysLeft");
+        $query = $db->query("SELECT raID, raName, raItem, raDaysLeft FROM raffle WHERE raDaysLeft > 0 AND raDaysLeft < 6 ORDER BY raDaysLeft");
     }
 
     while ($row = mysqli_fetch_assoc($query)) {
@@ -115,4 +115,4 @@ function buy_ticket(Database $db, Header $headers, array $user, int $userId, int
     index($db, $user, $userId);
 }
 
-$headers->endpage();
+$application->header->endPage();

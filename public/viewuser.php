@@ -3,24 +3,24 @@
 use Fmw\Database;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0);
 
 $viewuser = mysql_num($_GET['u']);
-$r = mysqli_fetch_assoc($db->query("SELECT u.*,us.*,g.* FROM users u LEFT JOIN userstats us ON u.userid=us.userid LEFT JOIN family g ON g.famID=u.gang WHERE u.userid={$viewuser}"));
+$r = mysqli_fetch_assoc($application->db->query("SELECT u.*,us.*,g.* FROM users u LEFT JOIN userstats us ON u.userid=us.userid LEFT JOIN family g ON g.famID=u.gang WHERE u.userid={$viewuser}"));
 
 if ($r['userid'] == 0) {
     print '<h3>Missing Person</h3><p>Sorry, we could not find that Mafioso. Wait 24 hours and then notify the police they are missing.</p><p><a href=\'mafiosoSearch.php\'>Search for someone else</a></p>';
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
-switch ($user['rankCat']) {
+switch ($application->user['rankCat']) {
     case "Staff" :
-        staffview($db, $user, $userId, $r);
+        staffview($application->db, $application->user, $userId, $r);
         break;
     default  :
-        usersview($db, $user, $userId, $r);
+        usersview($application->db, $application->user, $userId, $r);
         break;
 }
 
@@ -410,4 +410,4 @@ function staffview(Database $db, array $user, int $userId, array $r): void
     ';
 }
 
-$headers->endpage();
+$application->header->endPage();

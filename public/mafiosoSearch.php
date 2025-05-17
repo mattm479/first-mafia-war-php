@@ -1,7 +1,7 @@
 <?php
 
 require_once "globals.php";
-global $headers, $user;
+global $application;
 pagePermission($lgn=1, $stff=0, $njl=0, $nhsp=0, $nlck=0);
 
 print '
@@ -23,7 +23,7 @@ print '
                 </form><br>
                 <h5>Search by Location</h5>
                 <form action=\'mafiosoResults.php\' method=GET>
-                    '.locationDropdown($user['level']).' &nbsp; &nbsp; &nbsp;
+                    '.locationDropdown($application->user['level']).' &nbsp; &nbsp; &nbsp;
                     <input type=submit value=\'Search\'>
                 </form><br>
             </td>
@@ -38,4 +38,4 @@ print '
     </table><br>
 ';
 
-$headers->endpage();
+$application->header->endPage();

@@ -1,0 +1,18 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>County Jail</h3><br>
+    {% if data.error == "NOT_IN_JAIL" %}
+        <p>I don't know who you are trying to get out of jail, but they're not here.</p>
+        <p><a href='jail.php'>Back to jail</a> or <a href='home.php'>Head on home</a>.</p>
+    {% elseif data.error == "NOT_ENOUGH_MONEY" %}
+        <p>Did you not read the small print?  It costs {{ data.formatted_cost }} to even have a chance of getting {{ data.mafioso|raw }} out of jail today. If you wait a while, it will get cheaper as they serve more time.</p>
+        <p><a href='jail.php'>Back to jail</a> or <a href='bank.php'>Head to the bank</a>.</p>
+    {% elseif data.error == "FAILED_BRIBE" %}
+        <p>While trying to bribe the guards, the warden spotted you and arrested you on the spot. Naturally, he pocketed the bribe money as well.</p>
+        <p><a href='jail.php'>Go to jail</a></p>
+    {% else %}
+        <p>You have successfully sprung {{ data.mafioso|raw }} out of jail by bribing the guards!</p>
+        <p><a href='jail.php'>Back to jail</a> or <a href='explore.php'>Head into town</a></p>
+    {% endif %}
+{% endblock %}

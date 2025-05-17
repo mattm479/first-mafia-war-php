@@ -18,7 +18,7 @@ $stmt->fetch();
 
 if ($userId == null) {
     header('Refresh: 5; url=index.php');
-    die("<br><br><div align=center><h3>Login Error</h3><p>Invalid username or password. Please try again.</p><p><a href=index.php>Return to login</a></p></div>");
+    die("<br><br><div align=center><h3>Login Error</h3><p>Invalid username. Please try again.</p><p><a href=index.php>Return to login</a></p></div>");
 }
 
 $isValidPassword = password_verify($password, $user_password);

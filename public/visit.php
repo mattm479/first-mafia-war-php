@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 1, $nhsp = 1, $nlck = 1);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -12,36 +12,36 @@ $visit = isset($_GET['visit']) ? mysql_num($_GET['visit']) : 0;
 $totvis = 7;
 
 // Have enough Respect for the trip?
-if ($user['respect'] < 2) {
+if ($application->user['respect'] < 2) {
     print '
         <h3>No Respect</h3>
         <p>You must have <em>some</em> Respect to even consider such an important visit. You could try voting, crime, or asking for Respect from your peers.</p>
         <p><a href=\'explore.php\'>Head to town</a> or <a href=\'home.php\'>head on home</a>.</p>
     ';
 
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
 // Determine number of visits and if they have enough
-$qmat = $db->query("SELECT userid FROM coursesdone WHERE userid = {$userId} AND courseid = 24");
+$qmat = $application->db->query("SELECT userid FROM coursesdone WHERE userid = {$userId} AND courseid = 24");
 if (mysqli_num_rows($qmat)) {
     $totvis += 1;
 }
 
-$qinv = $db->query("SELECT inv_id FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 629");
+$qinv = $application->db->query("SELECT inv_id FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 629");
 if (mysqli_num_rows($qinv)) {
     $totvis += 1;
 }
 
-if ($user['visits'] >= $totvis) {
+if ($application->user['visits'] >= $totvis) {
     print '
         <h3>No more visits</h3>
         <p>You may only visit a limited number of special locations at a time. Please try again later after you have rested.</p>
         <p><a href=\'explore.php\'>Head to town</a> or <a href=\'home.php\'>head on home</a>.</p>
     ';
 
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
@@ -49,18 +49,18 @@ if ($user['visits'] >= $totvis) {
 $chance = 0;
 $rndbase = 1;
 $rndbonus = 0;
-if ($user['level'] < 5) {
+if ($application->user['level'] < 5) {
     $rndbase = 4;
-} else if ($user['level'] < 10) {
+} else if ($application->user['level'] < 10) {
     $rndbase = 2;
 }
 
-$qdon = $db->query("SELECT userid FROM coursesdone WHERE userid = {$userId} AND courseid = 27");
+$qdon = $application->db->query("SELECT userid FROM coursesdone WHERE userid = {$userId} AND courseid = 27");
 if (mysqli_num_rows($qdon)) {
     $rndbase = 2;
 }
 
-$qinv = $db->query("SELECT inv_id FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 626");
+$qinv = $application->db->query("SELECT inv_id FROM inventory WHERE inv_userid = {$userId} AND inv_itemid = 626");
 if (mysqli_num_rows($qinv)) {
     $rndbonus = 1;
     $rndbase += 1;
@@ -69,7 +69,7 @@ if (mysqli_num_rows($qinv)) {
 $chance = (rand($rndbase, 19)) + $rndbonus;
 
 // Do some universal calculations
-$mods = round(rand(1, 5) + ($user['level'] / 3));
+$mods = round(rand(1, 5) + ($application->user['level'] / 3));
 $vlow = rand(1, 2) * $mods;
 $medi = rand(1, 3) * $mods;
 $high = rand(2, 4) * $mods;
@@ -81,35 +81,35 @@ $dec = rand(150, 450) * $mods;
 $man = rand(300, 900) * $mods;
 $lot = rand(600, 1800) * $mods;
 $ton = rand(1200, 3600) * $mods;
-$cashonhand = $user['money'] - $few;
+$cashonhand = $application->user['money'] - $few;
 $stole = max($dec, $man);
 
 // OK, let us get started
 switch ($action) {
     case "casino":
-        visit_casino($db, $headers, $user, $userId, $chance, $stole, $dec, $man, $lot, $ton, $visit);
+        visit_casino($application->db, $application->header, $application->user, $userId, $chance, $stole, $dec, $man, $lot, $ton, $visit);
         break;
     case "distillery":
-        visit_distillery($db, $headers, $user, $userId, $chance, $few, $mods, $vlow, $medi, $high, $dec, $visit);
+        visit_distillery($application->db, $application->header, $application->user, $userId, $chance, $few, $mods, $vlow, $medi, $high, $dec, $visit);
         break;
     case "football":
-        visit_football($db, $headers, $user, $userId, $chance, $lit, $ton, $visit);
+        visit_football($application->db, $application->header, $application->user, $userId, $chance, $lit, $ton, $visit);
         break;
     case "meigsfield":
-        visit_meigsfield($db, $headers, $user, $userId, $chance, $dec, $man, $stole, $lot, $ton, $visit);
+        visit_meigsfield($application->db, $application->header, $application->user, $userId, $chance, $dec, $man, $stole, $lot, $ton, $visit);
         break;
     case "plantation":
-        visit_plantation($db, $headers, $user, $userId, $chance, $high, $medi, $few, $vlow, $visit);
+        visit_plantation($application->db, $application->header, $application->user, $userId, $chance, $high, $medi, $few, $vlow, $visit);
         break;
     case "track":
-        visit_track($db, $headers, $user, $userId, $chance, $stole, $few, $dec, $man, $lot, $visit);
+        visit_track($application->db, $application->header, $application->user, $userId, $chance, $stole, $few, $dec, $man, $lot, $visit);
         break;
     case "winery":
-        visit_winery($db, $headers, $user, $userId, $chance, $lit, $tops, $tin, $few, $visit);
+        visit_winery($application->db, $application->header, $application->user, $userId, $chance, $lit, $tops, $tin, $few, $visit);
         break;
     case "don":
     default:
-        visit_don($db, $headers, $user, $userId, $chance, $stole, $tin, $visit);
+        visit_don($application->db, $application->header, $application->user, $userId, $chance, $stole, $tin, $visit);
         break;
 }
 
@@ -1450,4 +1450,4 @@ function visit_winery(Database $db, Header $headers, array $user, int $userId, i
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

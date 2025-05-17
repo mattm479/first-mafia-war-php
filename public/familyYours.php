@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -17,42 +17,42 @@ $tx2 = isset($_POST['tx2']) ? mysql_tex($_POST['tx2']) : '';
 $tx3 = isset($_POST['tx3']) ? mysql_tex($_POST['tx3']) : '';
 $tx4 = isset($_POST['tx4']) ? mysql_tex($_POST['tx4']) : '';
 
-if (!$user['gang']) {
+if (!$application->user['gang']) {
     print '
         <h3>What Family?</h3>
         <p>Considering you are not currently in a Family, this area does not have much information for you.</p>
         <p><a href=\'familyList.php\'>Examine the current Families or start your own</a></p>
     ';
 
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
-$if = mysqli_fetch_assoc($db->query("SELECT famID, famName, famDon, famHeadquarters, famRespect, famVaultCash, famVaultTokens, famDescInt, famDesc FROM family WHERE famID = {$user['gang']}"));
-$count = mysqli_num_rows($db->query("SELECT userid FROM users WHERE gang = {$if['famID']}"));
-$qwr = $db->query("SELECT famWarID FROM familyWar WHERE famWarEnd = 0 AND (famWarAtt = {$user['gang']} OR famWarDef = {$user['gang']})");
+$if = mysqli_fetch_assoc($application->db->query("SELECT famID, famName, famDon, famHeadquarters, famRespect, famVaultCash, famVaultTokens, famDescInt, famDesc FROM family WHERE famID = {$application->user['gang']}"));
+$count = mysqli_num_rows($application->db->query("SELECT userid FROM users WHERE gang = {$if['famID']}"));
+$qwr = $application->db->query("SELECT famWarID FROM familyWar WHERE famWarEnd = 0 AND (famWarAtt = {$application->user['gang']} OR famWarDef = {$application->user['gang']})");
 
 if (mysqli_num_rows($qwr) > 0) {
     $currentwar = ' &nbsp; <a class=light href=\'familyYours.php?action=warviews\'><font color=red>&nbsp;&middot;&nbsp; Your Family is at war! &nbsp;&middot;&nbsp;</font></a>';
 }
 
-$ib = mysqli_fetch_assoc($db->query("SELECT busID, busName FROM business WHERE busOwnerID = {$user['gang']}"));
+$ib = mysqli_fetch_assoc($application->db->query("SELECT busID, busName FROM business WHERE busOwnerID = {$application->user['gang']}"));
 
 $business = '&nbsp;No Store';
 $reim = '';
 if ($ib != null) {
-    if (!$ib['busID'] && $user['gangrank'] <= 2) {
+    if (!$ib['busID'] && $application->user['gangrank'] <= 2) {
         $business = '<a title=\'Create a Family Store\' href=\'business.php?action=shcreate\'>Create Shop</a>';
     } else if ($ib['busID']) {
         $business = '<a title=\'Shop in the Family Store\' href=\'business.php?ID=' . $ib['busID'] . '\'>' . $ib['busName'] . '</a>';
     }
 }
 
-if ($user['gangrank'] <= 2) {
+if ($application->user['gangrank'] <= 2) {
     $reim = '<span class=light><a title=\'Improve Family Respect\' href=\'familyYours.php?action=respecti\'>(imp)</a></span>';
 }
 
-if ($user['gangrank'] < 6) {
+if ($application->user['gangrank'] < 6) {
     $dial = '&nbsp;<a title=\'Exercise a little control\' href=\'familyYours.php?action=dialslap\'>Dial-a-Slap</a><br>';
 }
 
@@ -76,7 +76,7 @@ print '
         <strong>Vault</strong>
 ';
 
-if ($user['gangrank'] <= 4) {
+if ($application->user['gangrank'] <= 4) {
     print '&nbsp; <a class=light title=\'Manage Vault\' href=\'familyYours.php?action=famvault\'>(manage)</a>';
 }
 print '
@@ -86,14 +86,14 @@ print '
    &nbsp;<a title=\'Support the Family\' href=\'familyYours.php?action=donatewe\'>&middot; Please Donate &middot;</a><br><br>
 ';
 
-if ($user['gangrank'] <= 3) {
+if ($application->user['gangrank'] <= 3) {
     print'<strong>Officer Duties</strong><br>';
 
-    if ($if['famRespect'] < 100 && $user['gangrank'] == 1) {
+    if ($if['famRespect'] < 100 && $application->user['gangrank'] == 1) {
         print '&nbsp;<a href=\'familyYours.php?action=dissolve\'><strong>Dissolve Family</strong></a><br>';
     }
 
-    if ($user['gangrank'] == 1) {
+    if ($application->user['gangrank'] == 1) {
         print '&nbsp;<a href=\'familyYours.php?action=renamefa\'>Rename Family</a><br>';
     }
 
@@ -104,7 +104,7 @@ if ($user['gangrank'] <= 3) {
     ';
 }
 
-if ($user['gangrank'] <= 2) {
+if ($application->user['gangrank'] <= 2) {
     print '
         nbsp;<a href=\'familyYours.php?action=massmail\'>Mass Mail</a><br>
         &nbsp;<a href=\'familyYours.php?action=masspaym\'>Mass Payment</a><br><br>
@@ -119,86 +119,86 @@ print '
 
 switch ($action) {
     case "announce":
-        announcement($db, $headers, $user, $if, $tx4);
+        announcement($application->db, $application->header, $application->user, $if, $tx4);
         break;
     case "describe":
-        description($db, $headers, $user, $if, $tx4);
+        description($application->db, $application->header, $application->user, $if, $tx4);
         break;
     case "dissolve":
-        dissolve($db, $headers, $user, $tx4);
+        dissolve($application->db, $application->header, $application->user, $tx4);
         break;
     case "donatewe":
-        donate_wealth($user);
+        donate_wealth($application->user);
         break;
     case "donatedo":
-        donate_wealth_do($db, $headers, $user, $userId, $nu1, $nu2, $nu3);
+        donate_wealth_do($application->db, $application->header, $application->user, $userId, $nu1, $nu2, $nu3);
         break;
     case "fcrimecu":
-        family_crime_current($db, $headers, $user, $if, $count, $nu4);
+        family_crime_current($application->db, $application->header, $application->user, $if, $count, $nu4);
         break;
     case "familyta":
-        family_tag($db, $headers, $user, $if, $tx4);
+        family_tag($application->db, $application->header, $application->user, $if, $tx4);
         break;
     case "famvault":
-        family_vault($db, $headers, $user, $if, $nu1, $nu2, $nu3);
+        family_vault($application->db, $application->header, $application->user, $if, $nu1, $nu2, $nu3);
         break;
     case "dialslap":
-        dial_a_slap($db, $headers, $user, $userId, $nu1, $nu2);
+        dial_a_slap($application->db, $application->header, $application->user, $userId, $nu1, $nu2);
         break;
     case "inventry":
-        inventory($db, $user, $if);
+        inventory($application->db, $application->user, $if);
         break;
     case "leavefam":
-        leave_family($headers, $userId, $if);
+        leave_family($application->header, $userId, $if);
         break;
     case "leavefdo":
-        leave_family_do($db, $headers, $user, $userId, $if);
+        leave_family_do($application->db, $application->header, $application->user, $userId, $if);
         break;
     case "massmail":
-        mass_mail($db, $user, $userId, $if, $tx1, $tx2);
+        mass_mail($application->db, $application->user, $userId, $if, $tx1, $tx2);
         break;
     case "masspaym":
-        mass_payment($db, $headers, $user, $if, $count, $nu1);
+        mass_payment($application->db, $application->header, $application->user, $if, $count, $nu1);
         break;
     case "membered":
-        member_edit($db, $user, $nu4);
+        member_edit($application->db, $application->user, $nu4);
         break;
     case "memberdo":
-        member_edit_do($db, $headers, $user, $nu1, $nu2, $tx1);
+        member_edit_do($application->db, $application->header, $application->user, $nu1, $nu2, $tx1);
         break;
     case "membersh":
-        membership($db, $user, $if, $count, $nu1, $nu4);
+        membership($application->db, $application->user, $if, $count, $nu1, $nu4);
         break;
     case "removeme":
-        remove_member($db, $headers, $user, $userId, $if, $nu4);
+        remove_member($application->db, $application->header, $application->user, $userId, $if, $nu4);
         break;
     case "respecti":
-        respect_improve($db, $headers, $user, $if, $nu1);
+        respect_improve($application->db, $application->header, $application->user, $if, $nu1);
         break;
     case "renamefa":
-        rename_family($db, $headers, $user, $if, $tx4);
+        rename_family($application->db, $application->header, $application->user, $if, $tx4);
         break;
     case "wardecla":
-        war_declare($db, $headers, $user, $nu1, $nu2);
+        war_declare($application->db, $application->header, $application->user, $nu1, $nu2);
         break;
     case "warviews":
-        war_views($db, $user);
+        war_views($application->db, $application->user);
         break;
     case "warsrask":
-        war_surrender($db, $headers, $user, $nu1, $nu2, $nu4);
+        war_surrender($application->db, $application->header, $application->user, $nu1, $nu2, $nu4);
         break;
     case "warsracc":
-        war_surrender_accept($db, $user, $nu4);
+        war_surrender_accept($application->db, $application->user, $nu4);
         break;
     case "warfarel":
-        warfare_lockdown($db, $headers, $user, $if, $tx1);
+        warfare_lockdown($application->db, $application->header, $application->user, $if, $tx1);
         break;
     case "warfarlr":
-        warfare_lockdown_end($db, $headers, $user, $userId, $nu4, $tx1);
+        warfare_lockdown_end($application->db, $application->header, $application->user, $userId, $nu4, $tx1);
         break;
     case "famindex":
     default:
-        index($db, $user, $if, $tx4);
+        index($application->db, $application->user, $if, $tx4);
         break;
 }
 
@@ -1523,4 +1523,4 @@ function war_views(Database $db, array $user): void
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

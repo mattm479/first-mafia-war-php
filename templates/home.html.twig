@@ -7,12 +7,12 @@
             <td style='vertical-align: top;width: 305px;'>
                 {% set item_type = '' %}
                 {% for left_pane in data.left_pane %}
-                    {% if item_type != left_pane.items.type %}
-                        <h4>{{ left_pane.items.type }}</h4>
-                        {% set item_type = left_pane.items.type %}
-                    {% endif %}
-
                     {% for item in left_pane.items.items %}
+                        {% if item_type != left_pane.items.type %}
+                            <h4>{{ left_pane.items.type }}</h4>
+                            {% set item_type = left_pane.items.type %}
+                        {% endif %}
+
                         {% if item.itmid != 602 and item.itmid != 86 %}
                             {% set details %}<a title='Do what you will with me' href='items.php?action=util&uid={{ data.user.userid }}&iid={{ item.inv_id }}'>utilize</a>{% endset %}
                         {% endif %}
@@ -33,12 +33,12 @@
             </td>
             <td style='vertical-align: top;width: 305px;border-left: solid 1px rgb(102,102,102);padding-top:-10px;padding-left:5px;'>
                 {% for right_pane in data.right_pane %}
-                    {% if item_type != right_pane.items.type %}
-                        <h4>{{ right_pane.items.type }}</h4>
-                        {% set item_type = right_pane.items.type %}
-                    {% endif %}
-
                     {% for item in right_pane.items.items %}
+                        {% if item_type != right_pane.items.type %}
+                            <h4>{{ right_pane.items.type }}</h4>
+                            {% set item_type = right_pane.items.type %}
+                        {% endif %}
+
                         {% if item.itmid != 602 and item.itmid != 86 %}
                             {% set details %}<a title='Do what you will with me' href='items.php?action=util&uid={{ data.user.userid }}&iid={{ item.inv_id }}'>utilize</a>{% endset %}
                         {% endif %}

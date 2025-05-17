@@ -12,7 +12,7 @@ function attackGangWar($winner, $loser, $gangBase = 1): string
     $lose = mysqli_fetch_assoc($application->db->query("SELECT gang,gangrank,userid FROM users WHERE userid = {$loser}"));
     $war = mysqli_fetch_assoc($application->db->query("SELECT famWarID, famWarType, famWarAttPoints, famWarAtt, famWarDefPoints, famWarDef FROM familyWar WHERE famWarEnd = 0 AND ((famWarAtt = {$win['gang']} AND famWarDef = {$lose['gang']}) OR (famWarDef = {$win['gang']} AND famWarAtt = {$lose['gang']}))"));
 
-    if ($war['famWarType'] > 1 || ($war['famWarType'] == 1 && $win['gangrank'] == 1 && $lose['gangrank'] == 1)) {
+    if (isset($war['famWarType']) && $war['famWarType'] > 1 || ($war['famWarType'] == 1 && $win['gangrank'] == 1 && $lose['gangrank'] == 1)) {
         $application->db->query("UPDATE familyWar SET famWarAttPoints = famWarAttPoints - {$gangBase} WHERE famWarAtt = {$lose['gang']} AND famWarID = {$war['famWarID']}");
         $application->db->query("UPDATE familyWar SET famWarDefPoints = famWarDefPoints - {$gangBase} WHERE famWarDef = {$lose['gang']} AND famWarID = {$war['famWarID']}");
         $application->db->query("UPDATE familyWar SET famWarAttPoints = famWarAttPoints + {$gangBase} WHERE famWarAtt = {$win['gang']} AND famWarID = {$war['famWarID']}");
@@ -458,7 +458,7 @@ function logAttack($attackerUserId, $defenderUserId, $result, $shortDescription,
 {
     global $application;
 
-    $application->db->query("INSERT INTO logsAttacks (laAttacker, laDefender, laResult, laTime, laLogShort, laLogLong, laItem) VALUES ({$attackerUserId}, {$defenderUserId}, '{$result}', unix_timestamp(), '{$shortDescription}', '{$longDescription}', {$itemId})");
+    $application->db->query("INSERT INTO logsAttacks (laAttacker, laDefender, laResult, laTime, laLogShort, laLogLong, laItem) VALUES ({$attackerUserId}, {$defenderUserId}, '{$result}', unix_timestamp(), \"{$shortDescription}\", \"{$longDescription}\", {$itemId})");
 }
 
 function logEvent($userId, $text): void

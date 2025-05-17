@@ -1,0 +1,15 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Estate Agent</h3>
+    <div class=floatright>
+        <img src='assets/images/photos/livingRoom.jpg' width=250 height=284 alt='Living Room'>
+    </div>
+    {% if data.error == "NOT_ENOUGH_MONEY" %}
+        <p>You need more money to buy that property.</p>
+        <p><a href='bank.php'>Visit the Bank</a> or head <a href='estate.php?action=view'>Back to the Estate Agent</a></p>
+    {% else %}
+        <p>Congratulations on your purchase. You purchased the {{ data.house }} for {{ data.price }}</p>
+        <p><a href='estate.php?action=view'>Back</a></p>
+    {% endif %}
+{% endblock %}

@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn=1, $stff=0, $njl=1, $nhsp=1, $nlck=1);
 
 $action = isset($_GET['act']) ? mysql_tex($_GET['act']) : '';
@@ -20,13 +20,13 @@ print '
 
 switch($action) {
    case 'buy':
-       buy($db, $headers, $user, $userId, $autoId);
+       buy($application->db, $application->header, $application->user, $userId, $autoId);
        break;
    case 'sell':
-       sell($db, $headers, $user, $userId, $autoId);
+       sell($application->db, $application->header, $application->user, $userId, $autoId);
        break;
    default:
-       index($db, $user);
+       index($application->db, $application->user);
        break;
 }
 
@@ -118,4 +118,4 @@ function sell(Database $db, Header $headers, array $user, int $userId, int $auto
     ';
 }
 
-$headers->endpage();
+$application->header->endPage();

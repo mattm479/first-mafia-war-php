@@ -1,7 +1,7 @@
 <?php
 
 require_once "globals.php";
-global $db, $headers, $user;
+global $application;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $by = isset($_GET['by']) ? mysql_tex($_GET['by']) : 'username';
@@ -21,9 +21,9 @@ if ($active) {
     $addtitle = 'Active Players';
     $loc = "active = 1";
 } else if ($attack) {
-    $attupper = ($user['comRank'] + 20);
-    $attlower = max(0, ($user['comRank'] - 20));
-    $options = " WHERE location = {$user['location']} AND trackActionTime < unix_timestamp() - 15 * 60 AND hospital = 0 AND jail = 0 AND rankCat != 'Staff' AND (`rank` IN ('Associate', 'Giovane') OR comRank BETWEEN {$attlower} AND {$attupper})";
+    $attupper = ($application->user['comRank'] + 20);
+    $attlower = max(0, ($application->user['comRank'] - 20));
+    $options = " WHERE location = {$application->user['location']} AND trackActionTime < unix_timestamp() - 15 * 60 AND hospital = 0 AND jail = 0 AND rankCat != 'Staff' AND (`rank` IN ('Associate', 'Giovane') OR comRank BETWEEN {$attlower} AND {$attupper})";
     $addtitle = 'Attack Targets';
     $loc = "attack = 1";
 } else if ($giovane) {
@@ -31,9 +31,9 @@ if ($active) {
     $addtitle = 'Giovane';
     $loc = "giovane = 1";
 } else if ($location) {
-    $options = " WHERE location = {$user['location']} AND rankCat != 'Staff'";
+    $options = " WHERE location = {$application->user['location']} AND rankCat != 'Staff'";
     $addtitle = 'Location';
-    $loc = "location = {$user['location']}";
+    $loc = "location = {$application->user['location']}";
 } else if ($name) {
     $options = " WHERE username LIKE ('%{$name}%') AND rankCat != 'Staff'";
     $addtitle = 'Name Search: ' . $name;
@@ -60,8 +60,8 @@ print '
 ';
 
 // Database query
-$query = $db->query("SELECT userid, comRank, level, money, respect, location, trackActionTime, username FROM users {$options} ORDER BY {$by} {$ord} LIMIT {$st}, 50");
-$q2 = $db->query("SELECT userid FROM users {$options}");
+$query = $application->db->query("SELECT userid, comRank, level, money, respect, location, trackActionTime, username FROM users {$options} ORDER BY {$by} {$ord} LIMIT {$st}, 50");
+$q2 = $application->db->query("SELECT userid FROM users {$options}");
 $membs = mysqli_num_rows($q2);
 
 // Page count
@@ -114,4 +114,4 @@ while ($row = mysqli_fetch_assoc($query)) {
 
 print '</table>';
 
-$headers->endpage();
+$application->header->endPage();

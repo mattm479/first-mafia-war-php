@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "sglobals.php";
-global $db, $headers, $user, $userId, $domain;
+global $application, $domain;
 pagePermission($lgn = 1, $stff = 1, $njl = 0, $nhsp = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -15,28 +15,28 @@ $mafiosoID = isset($_POST['mafiosoID']) ? mysql_num($_POST['mafiosoID']) : 0;
 
 switch ($action) {
     case 'fedjail':
-        fedjail($db, $headers, $user, $mid);
+        fedjail($application->db, $application->header, $application->user, $mid);
         break;
     case 'fedjaildo':
-        fedjaildo($db, $headers, $user, $days, $mafiosoID, $reason);
+        fedjaildo($application->db, $application->header, $application->user, $days, $mafiosoID, $reason);
         break;
     case 'fedjailundo':
-        fedjailundo($db, $headers, $user, $mafiosoID);
+        fedjailundo($application->db, $application->header, $application->user, $mafiosoID);
         break;
     case 'gagform':
-        gag_form($headers, $user, $mid);
+        gag_form($application->header, $application->user, $mid);
         break;
     case 'gagsub':
-        gag_submit($db, $headers, $user, $mafiosoID, $reason, $days);
+        gag_submit($application->db, $application->header, $application->user, $mafiosoID, $reason, $days);
         break;
     case 'ungagsub':
-        ungag_submit($db, $headers, $user);
+        ungag_submit($application->db, $application->header, $application->user);
         break;
     case 'ipform':
-        ip_search_form($user);
+        ip_search_form($application->user);
         break;
     case 'ipsub':
-        ip_search_submit($db, $user, $domain);
+        ip_search_submit($application->db, $application->user, $domain);
         break;
     default:
         print "Error: This script requires an action.";
@@ -286,4 +286,4 @@ function ip_search_submit(Database $db, array $user, string $domain): void
     ";
 }
 
-$headers->endpage();
+$application->header->endPage();

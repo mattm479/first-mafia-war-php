@@ -1,0 +1,22 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>County Jail</h3><br>
+    {% if data.error == 'USER_IN_JAIL' %}
+        <p>You cannot bail out other people while you yourself are in jail. Bust yourself out first!</p>
+        <p><a href='jail.php'>Back to Jail</a></p>
+    {% elseif data.error == 'NOT_IN_JAIL' %}
+        <p>I don't know who you are trying to bust out of jail, but they're not here.</p>
+        <p><a href='jail.php'>Back to Jail</a></p>
+    {% elseif data.error == 'NOT_ENOUGH_RESPECT' %}
+        <p>You need more respect to get anyone out of jail today.</p>
+        <p><a href='jail.php'>Back to Jail</a></p>
+    {% elseif data.error == 'USER_BUSTED' %}
+        <p>While trying to bust out your friend, a guard spotted you and dragged you into jail yourself. Unlucky!</p>
+        <p>You should have shown more respect.</p>
+        <p><a href='jail.php'>Go to jail</a></p>
+    {% else %}
+        <p>You successfully broke {{ data.mafioso|raw }} out of jail!</p>
+        <p><a href='jail.php'>Back</a> or <a href='explore.php'>Head into town</a></p>
+    {% endif %}
+{% endblock %}

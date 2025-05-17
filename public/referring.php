@@ -1,7 +1,7 @@
 <?php
 
 require_once "globals.php";
-global $headers, $userId;
+global $application, $userId;
 pagePermission($lgn=1, $stff=0, $njl=0, $nhsp=0, $nlck=0);
 
 print '
@@ -61,7 +61,7 @@ print '
     <img src=\'http://www.firstmafiawar.com/images/ads/fmw_ad_banner.gif\'><br>
     <pre>&lt;&#97;&#32;&#104;&#114;&#101;&#102;&#61;&quot;&#104;&#116;&#116;&#112;&#58;&#47;&#47;&#119;&#119;&#119;&#46;&#102;&#105;&#114;&#115;&#116;&#109;&#97;&#102;&#105;&#97;&#119;&#97;&#114;&#46;&#99;&#111;&#109;&#47;&#114;&#101;&#103;&#105;&#115;&#116;&#101;&#114;&#46;&#112;&#104;&#112;&#63;&#82;&#69;&#70;&#61;' . $userId . '&quot;&gt;<br>&lt;&#105;&#109;&#103;&#32;&#115;&#114;&#99;&#61;&quot;&#104;&#116;&#116;&#112;&#58;&#47;&#47;&#119;&#119;&#119;&#46;&#102;&#105;&#114;&#115;&#116;&#109;&#97;&#102;&#105;&#97;&#119;&#97;&#114;&#46;&#99;&#111;&#109;&#47;&#105;&#109;&#97;&#103;&#101;&#115;&#47;&#97;&#100;&#115;&#47;&#102;&#109;&#119;&#95;&#97;&#100;&#95;&#98;&#97;&#110;&#110;&#101;&#114;&#46;&#103;&#105;&#102;&quot;&gt;&lt;&#47;&#97;&gt;</pre>
     
-    <p>Remember, the only way you can get the benefit if if they use one of these links!</p>
+    <p>Remember, the only way you can get the benefit is if they use one of these links!</p>
 ';
 
-$headers->endpage();
+$application->header->endPage();

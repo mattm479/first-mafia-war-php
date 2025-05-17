@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 1, $nlck = 0);
 
 $action     = isset($_GET['act']) ? mysql_tex($_GET['act']) : '';
@@ -18,7 +18,7 @@ $chiun      = 1;
 $helga      = 0;
 $hartman    = 1;
 
-$query = $db->query("SELECT inv_userid, inv_itemid FROM inventory WHERE inv_userid={$userId} AND inv_itemid IN (627, 681)");
+$query = $application->db->query("SELECT inv_userid, inv_itemid FROM inventory WHERE inv_userid={$userId} AND inv_itemid IN (627, 681)");
 while ($row = mysqli_fetch_assoc($query)) {
     if (isset($row['inv_userid']) && $row['inv_userid'] == $userId) {
         if ($row['inv_itemid'] == 627) {
@@ -33,10 +33,10 @@ while ($row = mysqli_fetch_assoc($query)) {
     }
 }
 
-$query = $db->query("SELECT userid, courseid FROM coursesdone WHERE courseid IN (33, 34) AND userid = {$userId}");
+$query = $application->db->query("SELECT userid, courseid FROM coursesdone WHERE courseid IN (33, 34) AND userid = {$userId}");
 while ($row = mysqli_fetch_assoc($query)) {
-    if ((isset($row['userid']) && $row['userid'] == $userId) || $user['jail'] > 0) {
-        if ($user['jail'] > 0 || $row['courseid'] == 33) {
+    if ((isset($row['userid']) && $row['userid'] == $userId) || $application->user['jail'] > 0) {
+        if ($application->user['jail'] > 0 || $row['courseid'] == 33) {
             $help .= " Bruno the Jail yard Trainer is helping you achieve <strong>real</strong> results increasing your potential.";
             $bruno = 5;
         }
@@ -50,11 +50,11 @@ while ($row = mysqli_fetch_assoc($query)) {
 
 switch ($action) {
     case "workout":
-        workout($db, $headers, $user, $userId, $agi, $gua, $str, $lab);
+        workout($application->db, $application->header, $application->user, $userId, $agi, $gua, $str, $lab);
         break;
     case "index":
     default:
-        index($db, $user, $userId, $agi, $gua, $str, $lab, $help, $bruno, $chiun, $helga, $hartman);
+        index($application->db, $application->user, $userId, $agi, $gua, $str, $lab, $help, $bruno, $chiun, $helga, $hartman);
         break;
 }
 
@@ -272,4 +272,4 @@ print '
     </div>
 ';
 
-$headers->endpage();
+$application->header->endPage();

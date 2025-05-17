@@ -1,7 +1,7 @@
 <?php
 
 require_once "globals.php";
-global $db, $headers, $userId;
+global $application, $userId;
 pagePermission($lgn=1, $stff=0, $njl=0, $nhsp=0, $nlck=0);
 
 print "
@@ -9,7 +9,7 @@ print "
     <table width=95% cellpadding=3 cellspacing=0 class=table>
 ";
 
-$result = $db->query("SELECT a_text, a_time FROM announcements ORDER BY a_time DESC LIMIT 10");
+$result = $application->db->query("SELECT a_text, a_time FROM announcements ORDER BY a_time DESC LIMIT 10");
 while ($row = mysqli_fetch_assoc($result)) {
     print "
         <tr><td class=mostborders>" . mysql_tex_out($row['a_text']) . "</td></tr>
@@ -20,6 +20,6 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 print "</table>";
 
-$db->query("UPDATE users SET newAnnounce = 0 WHERE userid = {$userId}");
+$application->db->query("UPDATE users SET newAnnounce = 0 WHERE userid = {$userId}");
 
-$headers->endpage();
+$application->header->endPage();

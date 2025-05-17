@@ -3,50 +3,50 @@
 use Fmw\Database;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 1, $nhsp = 0, $nlck = 1);
 
 $interview = isset($_GET['interview']) ? mysql_num($_GET['interview']) : 0;
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
 
-if (!$user['job']) {
+if (!$application->user['job']) {
     if (!$interview) {
         print "
             <h3>Employment</h3>
             <p>You do not yet have a job. Below is a list of available jobs.</p>
         ";
 
-        $query = $db->query("SELECT jID, jNAME, jDESC FROM jobs");
+        $query = $application->db->query("SELECT jID, jNAME, jDESC FROM jobs");
         while ($row = mysqli_fetch_assoc($query)) {
             print "<p>{$row['jNAME']} - {$row['jDESC']} &middot; <a href='job.php?interview={$row['jID']}'><strong>interview</strong></a></p>";
         }
     } else {
-        $row = mysqli_fetch_assoc($db->query("SELECT j.jOWNER, jr.jrID, jr.jrLABOURN, jr.jrIQN FROM jobs j LEFT JOIN jobranks jr ON j.jFIRST = jr.jrID WHERE j.jID = {$interview}"));
+        $row = mysqli_fetch_assoc($application->db->query("SELECT j.jOWNER, jr.jrID, jr.jrLABOURN, jr.jrIQN FROM jobs j LEFT JOIN jobranks jr ON j.jFIRST = jr.jrID WHERE j.jID = {$interview}"));
         print "
             <h3>Employment</h3>
-            <p>{$row['jOWNER']}: So {$user['username']}, you were looking for a job with us?</p>
-            <p>{$user['username']}: Yes please.</p>
+            <p>{$row['jOWNER']}: So {$application->user['username']}, you were looking for a job with us?</p>
+            <p>{$application->user['username']}: Yes please.</p>
         ";
 
-        if ($user['labour'] >= $row['jrLABOURN'] && $user['IQ'] >= $row['jrIQN']) {
-            $db->query("UPDATE users SET job = {$interview}, jobrank = {$row['jrID']} WHERE userid = {$userId};");
+        if ($application->user['labour'] >= $row['jrLABOURN'] && $application->user['IQ'] >= $row['jrIQN']) {
+            $application->db->query("UPDATE users SET job = {$interview}, jobrank = {$row['jrID']} WHERE userid = {$userId};");
             print "
-                <p>{$row['jOWNER']}: Okay {$user['username']}. You may work for us.  See you tomorrow.</p>
+                <p>{$row['jOWNER']}: Okay {$application->user['username']}. You may work for us.  See you tomorrow.</p>
                 <p><a href='job.php'>Back to work</a></p>
             ";
         } else {
             print "
                 <h3>Employment</h3>
-                <p>{$row['jOWNER']}: Sorry {$user['username']}, you are not skilled enough to work in this field. You'll need 
+                <p>{$row['jOWNER']}: Sorry {$application->user['username']}, you are not skilled enough to work in this field. You'll need 
             ";
 
-            if ($user['labour'] < $row['jrLABOURN']) {
-                $s = $row['jrLABOURN'] - $user['labour'];
+            if ($application->user['labour'] < $row['jrLABOURN']) {
+                $s = $row['jrLABOURN'] - $application->user['labour'];
                 print " {$s} more labour, ";
             }
 
-            if ($user['IQ'] < $row['jrIQN']) {
-                $s = $row['jrIQN'] - $user['IQ'];
+            if ($application->user['IQ'] < $row['jrIQN']) {
+                $s = $row['jrIQN'] - $application->user['IQ'];
                 print " {$s} more IQ, ";
             }
 
@@ -59,13 +59,13 @@ if (!$user['job']) {
 } else {
     switch ($action) {
         case 'quit':
-            quit_job($db, $userId);
+            quit_job($application->db, $userId);
             break;
         case 'promote':
-            job_promote($db, $user, $userId);
+            job_promote($application->db, $application->user, $userId);
             break;
         default:
-            job_index($db, $user);
+            job_index($application->db, $application->user);
             break;
     }
 }
@@ -157,4 +157,4 @@ print "
     </div>
 ";
 
-$headers->endpage();
+$application->header->endPage();

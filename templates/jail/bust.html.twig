@@ -1,0 +1,17 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>County Jail</h3><br>
+    <p>Breaking someone out of jail is risky business and takes a Mafioso of some status to pull it off. You are breaking {{ data.mafioso|raw }} out of jail.</p>
+    <p>How much Respect are you willing to sacrifice to increase your chance of success? You might succeed with only 1 and can spend up to 5. What do you do?</p>
+    <form action='jail.php?action=bustdo&uid={{ data.userId }}' method=POST>
+    <select name=res>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+    </select>
+    <input type=submit value='Give Respect'>
+    </form>
+{% endblock %}

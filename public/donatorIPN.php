@@ -1,18 +1,17 @@
 <?php
-include "config.php";
-global $_CONFIG;
-define("MONO_ON", 1);
-require "class/class_db_mysql.php";
-$db = new database;
-$db->configure($_CONFIG['hostname'], $_CONFIG['username'], $_CONFIG['password'], $_CONFIG['database'], $_CONFIG['persistent']);
-$db->connect();
+
+use Fmw\Database;
+
+$config = require "../config/application.php";
+$db = new Database($config['database']);
+
 require 'global_func.php';
-$set = array();
-$settq = $db->query("SELECT * FROM settings");
-while ($r = mysqli_fetch_assoc($settq)) {
-    $set[$r['conf_name']] = $r['conf_value'];
+
+$settings = array();
+$query = $db->query("SELECT conf_name, conf_value FROM settings");
+while ($row = mysqli_fetch_assoc($query)) {
+    $settings[$row['conf_name']] = $row['conf_value'];
 }
-// logEvent(1, "DP {$pack} top of page.");
 
 // Validate with Paypal
 $req = 'cmd=_notify-validate';
@@ -20,11 +19,11 @@ foreach ($_POST as $key => $value) {
     $value = urlencode(stripslashes($value));
     $req .= "&$key=$value";
 }
-$header .= "POST /cgi-bin/webscr HTTP/1.0\r\n";
+
+$header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
 $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
 $header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
 $fp = fsockopen('www.paypal.com', 80, $errno, $errstr, 30);
-// logEvent(1, "DP {$pack} passed PayPal validation.");
 
 // assign posted variables to local variables
 $item_name = $_POST['item_name'];
@@ -323,11 +322,6 @@ if ($fp) {
             logEvent(1, "~ " . iteminfo($pack) . " donated to " . mafiosoLight($buyer) . ".");
             $db->query("INSERT INTO logsDonations VALUES('',$pack,'','$payment_amount',$buyer,'$payer_email',unix_timestamp(),'$txn_id')");
 
-//   $amnt=round(($payment_amount-2)/10);
-//   if ($amnt>0) {
-//    itemAdd(301,0,$buyer,0,$amnt);
-//    logEvent($buyer, "As a special gift you get {$amnt} x ".iteminfo(301).".");
-//   }
             $r = mysqli_fetch_assoc($db->query("SELECT donatedM FROM users WHERE userid={$buyer}"));
             if ($r['donatedM'] < 25 and ($r['donatedM'] + $payment_amount >= 25)) {
                 itemAdd(310, 1, 0, $buyer, 0);

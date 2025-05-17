@@ -1,7 +1,7 @@
 <?php
 
 require_once "globals.php";
-global $headers, $user;
+global $application;
 
 print '
     <h3>Donation &amp; Gift Packages</h3>
@@ -11,13 +11,13 @@ print '
             <td valign=top>
 ';
 
-if ($user['userid'] == 611 || $user['userid'] == 1) {
+if ($application->user['userid'] == 611 || $application->user['userid'] == 1) {
     print '
         <div class=floatright style=\'margin-right:1em;\'>
             <form action=\'https://www.paypal.com/cgi-bin/webscr\' method=POST>
                 <input type=hidden name=cmd value=\'_xclick\'>
                 <input type=hidden name=business value=\'paypal@kefern.com\'>
-                <input type=hidden name=item_name value=\'www.firstmafiawar.com|DP|399|' . $user['userid'] . '\'>
+                <input type=hidden name=item_name value=\'www.firstmafiawar.com|DP|399|' . $application->user['userid'] . '\'>
                 <input type=hidden name=amount value=\'1000.00\'>
                 <input type=hidden name=return value=\'http://www.firstmafiawar.com/donatorDone.php?action=done\'>
                 <input type=hidden name=cancel_return value=\'http://www.firstmafiawar.com/donatorDone.php?action=cancel\'>
@@ -31,31 +31,45 @@ if ($user['userid'] == 611 || $user['userid'] == 1) {
     ';
 }
 
-print '
-    You have donated ' . moneyFormatter($user['donatedM']) . ' so far this month. You will<br>earn additional rewards as you pass each milestone.<br>
+print "
+    You have donated " . moneyFormatter($application->user['donatedM']) . " so far this month. You will<br>earn additional rewards as you pass each milestone.<br>
     <ul>
-        <li>$25 &nbsp;&nbsp; ' . iteminfo(310) . '</li>
-        <li>$50 &nbsp;&nbsp; ' . iteminfo(318) . '</li>
-        <li>$75 &nbsp;&nbsp; ' . iteminfo(338) . '</li>
-        <li>$100 &nbsp;' . iteminfo(366) . '</li>
-        <li>$150 &nbsp;' . iteminfo(346) . '</li>
-        <li>$200 &nbsp;' . iteminfo(326) . '</li>
-        <li>$250 &nbsp;' . iteminfo(311) . '</li>
-        <li>$300 &nbsp;' . iteminfo(319) . '</li>
-        <li>$350 &nbsp;' . iteminfo(339) . '</li>
+        <li>$25 &nbsp;&nbsp; " . iteminfo(310) . "</li>
+        <li>$50 &nbsp;&nbsp; " . iteminfo(318) . "</li>
+        <li>$75 &nbsp;&nbsp; " . iteminfo(338) . "</li>
+        <li>$100 &nbsp;" . iteminfo(366) . "</li>
+        <li>$150 &nbsp;" . iteminfo(346) . "</li>
+        <li>$200 &nbsp;" . iteminfo(326) . "</li>
+        <li>$250 &nbsp;" . iteminfo(311) . "</li>
+        <li>$300 &nbsp;" . iteminfo(319) . "</li>
+        <li>$350 &nbsp;" . iteminfo(339) . "</li>
         <li>...and more!</li>
     </ul>
-    <hr style=\'margin-top:1.2em; margin-bottom:1.2em;\'>
-    <div class=floatright style=\'margin-right:1em;\'>
-        <form action=\'https://www.paypal.com/cgi-bin/webscr\' method=POST>
-            <input type=hidden name=cmd value=\'_xclick\'>
-            <input type=hidden name=business value=\'paypal@kefern.com\'>
-            <input type=hidden name=item_name value=\'www.firstmafiawar.com|DP|301|' . $user['userid'] . ' . itemInfo(636) . '</li>
-        <li>' . itemInfo(632) . '</li>
-        <li>' . itemInfo(627) . '</li>
-        <li>' . itemInfo(626) . '</li>
+    <hr style='margin-top:1.2em; margin-bottom:1.2em;'>
+    <div class=floatright style='margin-right:1em;'>
+        <form action='https://www.paypal.com/cgi-bin/webscr' method=POST>
+            <input type=hidden name=cmd value='_xclick'>
+            <input type=hidden name=business value='paypal@kefern.com'>
+            <input type=hidden name=item_name value='www.firstmafiawar.com|DP|301|{$application->user['userid']}'>
+            <input type='hidden' name='amount' value='4.00'>
+            <input type='hidden' name='no_shipping' value='1'>
+            <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
+            <input type='hidden' name='cancel_return' value='http://www.firstmafiawar.com/donatorDone.php?action=cancel'>
+            <input type='hidden' name='notify_url' value='http://www.firstmafiawar.com/donatorIPN.php'>
+            <input type='hidden' name='cn' value='Your Player ID'>
+            <input type='hidden' name='currency_code' value='USD'>
+            <input type='hidden' name='tax' value='0'>
+            <input type='image' style='margin-bottom:2px' src='assets/images/layout/don4x1.jpg' alt='$4 donation' name='submit'>
+        </form>
+    </div>
+    <strong>Services</strong> (DP 1)<br>
+    <ul>
+        <li>" . itemInfo(636) . "</li>
+        <li>" . itemInfo(632) . "</li>
+        <li>" . itemInfo(627) . "</li>
+        <li>" . itemInfo(626) . "</li>
     </ul>
-';
+";
 
 print "
     <hr style='margin-top:1.2em; margin-bottom:1.2em;'>
@@ -63,7 +77,7 @@ print "
         <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
             <input type='hidden' name='cmd' value='_xclick'>
             <input type='hidden' name='business' value='paypal@kefern.com'>
-            <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|302|{$user['userid']}'>
+            <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|302|{$application->user['userid']}'>
             <input type='hidden' name='amount' value='4.00'>
             <input type='hidden' name='no_shipping' value='1'>
             <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -87,7 +101,7 @@ print "
         <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
             <input type='hidden' name='cmd' value='_xclick'>
             <input type='hidden' name='business' value='paypal@kefern.com'>
-            <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|303|{$user['userid']}'>
+            <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|303|{$application->user['userid']}'>
             <input type='hidden' name='amount' value='7.00'>
             <input type='hidden' name='no_shipping' value='1'>
             <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -111,7 +125,7 @@ print "
         <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
             <input type='hidden' name='cmd' value='_xclick'>
             <input type='hidden' name='business' value='paypal@kefern.com'>
-            <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|304|{$user['userid']}'>
+            <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|304|{$application->user['userid']}'>
             <input type='hidden' name='amount' value='9.00'>
             <input type='hidden' name='no_shipping' value='1'>
             <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -137,7 +151,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|305|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|305|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='3.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -161,7 +175,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|313|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|313|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='28.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done&type=gym'>
@@ -175,7 +189,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|371|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|371|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='60.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done&type=gym'>
@@ -189,7 +203,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|372|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|372|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='100.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done&type=gym'>
@@ -205,7 +219,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|310|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|310|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='4.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -219,7 +233,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|311|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|311|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='11.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -233,7 +247,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|312|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|312|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='16.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done&type=gym'>
@@ -260,7 +274,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|317|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|317|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='28.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -274,7 +288,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|373|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|373|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='60.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done&type=crimepays'>
@@ -288,7 +302,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|374|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|374|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='100.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -304,7 +318,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|314|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|314|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='4.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -318,7 +332,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|315|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|315|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='11.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done&type=crimepays'>
@@ -332,7 +346,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|316|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|316|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='16.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -359,7 +373,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|321|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|321|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='42.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -373,7 +387,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|375|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|375|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='90.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -387,7 +401,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|376|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|376|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='150.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -403,7 +417,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|318|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|318|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='6.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -417,7 +431,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|319|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|319|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='16.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -431,7 +445,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|320|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|320|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='24.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -457,7 +471,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|325|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|325|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='35.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -471,7 +485,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|377|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|377|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='75.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -485,7 +499,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|378|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|378|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='125.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -501,7 +515,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|322|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|322|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='5.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -515,7 +529,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|323|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|323|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='13.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -529,7 +543,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|324|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|324|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='20.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -554,7 +568,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|326|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|326|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='17.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done&type=improve'>
@@ -584,7 +598,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|333|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|333|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='28.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -598,7 +612,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|379|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|379|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='60.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -612,7 +626,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|380|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|380|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='100.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -628,7 +642,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|330|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|330|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='4.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -642,7 +656,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|331|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|331|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='11.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -656,7 +670,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|332|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|332|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='16.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -684,7 +698,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|336|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|336|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='28.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -698,7 +712,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|381|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|381|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='60.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -712,7 +726,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|382|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|382|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='100.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -728,7 +742,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|334|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|334|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='4.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -742,7 +756,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|335|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|335|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='11.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -756,7 +770,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|336|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|336|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='16.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -784,7 +798,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|341|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|341|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='42.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -798,7 +812,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|383|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|383|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='90.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -812,7 +826,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|384|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|384|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='150.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -828,7 +842,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|338|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|338|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='6.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -842,7 +856,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|339|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|339|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='16.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -856,7 +870,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|340|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|340|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='24.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -884,7 +898,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|345|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|345|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='35.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -898,7 +912,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|385|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|385|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='75.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -912,7 +926,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|386|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|386|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='125.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -928,7 +942,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|342|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|342|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='5.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -942,7 +956,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|343|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|343|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='13.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -956,7 +970,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type='hidden' name='cmd' value='_xclick'>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|344|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|344|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='20.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -982,7 +996,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type=hidden name=cmd value=_xclick>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|346|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|346|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='15.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -1008,7 +1022,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type=hidden name=cmd value=_xclick>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|350|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|350|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='4.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -1035,7 +1049,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type=hidden name=cmd value=_xclick>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|354|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|354|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='4.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -1062,7 +1076,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type=hidden name=cmd value=_xclick>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|358|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|358|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='5.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -1089,7 +1103,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type=hidden name=cmd value=_xclick>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|366|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|366|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='10.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -1114,7 +1128,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type=hidden name=cmd value=_xclick>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|370|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|370|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='4.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -1139,7 +1153,7 @@ print "
    <form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
    <input type=hidden name=cmd value=_xclick>
    <input type='hidden' name='business' value='paypal@kefern.com'>
-   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|306|{$user['userid']}'>
+   <input type='hidden' name='item_name' value='www.firstmafiawar.com|DP|306|{$application->user['userid']}'>
    <input type='hidden' name='amount' value='4.00'>
    <input type='hidden' name='no_shipping' value='1'>
    <input type='hidden' name='return' value='http://www.firstmafiawar.com/donatorDone.php?action=done'>
@@ -1168,4 +1182,4 @@ print "
   <br>
 ";
 
-$headers->endPage();
+$application->header->endPage();

@@ -6,6 +6,7 @@ require_once '../vendor/autoload.php';
 use Fmw\Application;
 
 $application = new Application();
+$userId = $application->user['userid'];
 
 require_once 'global_func.php';
 

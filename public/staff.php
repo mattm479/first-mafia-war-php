@@ -3,7 +3,7 @@
 use Fmw\Database;
 
 require_once "sglobals.php";
-global $db, $headers, $user, $userId, $settings;
+global $application;
 pagePermission($lgn = 1, $stff = 1, $njl = 0, $nhsp = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -22,31 +22,31 @@ $pad    = isset($_POST['pad']) ? mysql_tex($_POST['pad']) : '';
 
 switch ($action) {
     case 'announce':
-        announcements($db, $user, $text);
+        announcements($application->db, $application->user, $text);
         break;
     case 'basicset':
-        basicsettings($db, $user, $settings);
+        basicsettings($application->db, $application->user, $application->settings);
         break;
     case 'mafiainquirer':
-        mafiainquirer($db, $user, $do, $id, $text);
+        mafiainquirer($application->db, $application->user, $do, $id, $text);
         break;
     case 'massmailer':
-        massmailer($db, $user, $userId, $text);
+        massmailer($application->db, $application->user, $application->user['userid'], $text);
         break;
     case 'poll':
-        poll($db, $user);
+        poll($application->db, $application->user);
         break;
     case 'startpoll':
-        startpollsub($db, $user);
+        startpollsub($application->db, $application->user);
         break;
     case 'serverinfo':
-        serverinfo($user);
+        serverinfo($application->user);
         break;
     case 'streetfight':
-        street_fight($db, $text, $min, $max, $start, $end, $class, $grand, $gift);
+        street_fight($application->db, $text, $min, $max, $start, $end, $class, $grand, $gift);
         break;
     default:
-        index($db, $user, $settings, $pad);
+        index($application->db, $application->user, $application->settings, $pad);
         break;
 }
 
@@ -536,4 +536,4 @@ function street_fight(Database $db, string $text, int $min, int $max, int $start
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 1, $nhsp = 1, $nlck = 1);
 
 $aut = isset($_GET['aut']) ? mysql_num($_GET['aut']) : 0;
@@ -39,13 +39,13 @@ if ($aut > 0) {
 }
 
 if ($aut > 0) {
-    autotheft($db, $headers, $user, $userId, $aut, $fld, $glp, $gwl, $uiq, $lab);
+    autotheft($application->db, $application->header, $application->user, $userId, $aut, $fld, $glp, $gwl, $uiq, $lab);
 } else if ($com > 0) {
-    commit($db, $headers, $user, $userId, $com);
+    commit($application->db, $application->header, $application->user, $userId, $com);
 } else if ($cmt > 0) {
-    committed($db, $headers, $user, $userId, $gwl, $pnt, $cmt, $fld, $glp, $jim, $sid, $lko, $uiq, $lab);
+    committed($application->db, $application->header, $application->user, $userId, $gwl, $pnt, $cmt, $fld, $glp, $jim, $sid, $lko, $uiq, $lab);
 } else {
-    index($db, $user);
+    index($application->db, $application->user);
 }
 
 function autotheft(Database $db, Header $headers, array $user, int $userId, int $aut, int $fld, int $glp, int $gwl, int $uiq, int $lab): void
@@ -357,6 +357,8 @@ function commit(Database $db, Header $headers, array $user, int $userId, int $co
 
 function committed(Database $db, Header $headers, array $user, int $userId, int $gwl, int $pnt, int $cmt, int $fld, int $glp, int $jim, int $sid, int $lko, int $uiq, int $lab): void
 {
+    global $application;
+
     if ($user['crimeToken'] == 0) {
         $headers->endpage();
         exit;
@@ -472,7 +474,7 @@ function committed(Database $db, Header $headers, array $user, int $userId, int 
             <p>You gained:<br>$' . number_format($cash) . '<br>' . $expperc . '% experience<br>' . $bonus . '<br><p><a href=\'crime.php?com=' . $row['crID'] . '\'>Perform this crime again</a> or <a href=\'crime.php\'>try a different crime</a>.</p>
         ';
 
-        checkLevel();
+        checkLevel($application);
 
         $headers->endpage();
         exit;
@@ -504,4 +506,4 @@ function committed(Database $db, Header $headers, array $user, int $userId, int 
     ';
 }
 
-$headers->endpage();
+$application->header->endPage();

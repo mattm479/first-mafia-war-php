@@ -3,11 +3,11 @@
 use Fmw\Database;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 1, $nhsp = 1, $nlck = 0);
 
-$action = mysql_tex($_GET['action']);
-$do = mysql_num($_GET['do']);
+$action = isset($_GET['action']) ? mysql_tex($_GET['action']) : "";
+$do = isset($_GET['do']) ? mysql_num($_GET['do']) : 0;
 
 print '
     <h3>Street Fight</h3>
@@ -16,14 +16,14 @@ print '
         <table width=340 cellpadding=2 cellspacing=0 class=table style=\'font-size:smaller;\'>
 ';
 
-$qcsf = $db->query("SELECT sfID, sfLevelMin, sfLevelMax, sfTitle FROM streetFight WHERE sfStart = 0 AND sfEnd > 0 ORDER BY sfEnd ");
+$qcsf = $application->db->query("SELECT sfID, sfLevelMin, sfLevelMax, sfTitle FROM streetFight WHERE sfStart = 0 AND sfEnd > 0 ORDER BY sfEnd ");
 while ($rcsf = mysqli_fetch_assoc($qcsf)) {
     $join = '';
-    if ($user['attacksID'] == 0 && $user['level'] >= $rcsf['sfLevelMin'] && $user['level'] <= $rcsf['sfLevelMax']) {
+    if ($application->user['attacksID'] == 0 && $application->user['level'] >= $rcsf['sfLevelMin'] && $application->user['level'] <= $rcsf['sfLevelMax']) {
         $join = '<a href=\'streetfight.php?action=join&do=' . $rcsf['sfID'] . '\'>join&rang;</a>';
     }
 
-    $qcf = $db->query("SELECT userid, attacks FROM users WHERE attacksID = {$rcsf['sfID']} ORDER BY attacks DESC");
+    $qcf = $application->db->query("SELECT userid, attacks FROM users WHERE attacksID = {$rcsf['sfID']} ORDER BY attacks DESC");
     print '
         <tr><td colspan=3><br></td></tr>
         <tr>
@@ -48,10 +48,10 @@ print '</table></div>';
 
 switch ($action) {
     case 'join':
-        join_fight();
+        join_fight($application->db, $application->user, $userId, $do);
         break;
     default:
-        index($db);
+        index($application->db);
         break;
 }
 
@@ -108,4 +108,4 @@ function join_fight(Database $db, array $user, int $userId, int $do): void
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

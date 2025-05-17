@@ -1,7 +1,7 @@
 <?php
 
 require_once "globals.php";
-global $headers;
+global $application;
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
 
@@ -23,4 +23,4 @@ if ($action == "cancel") {
     ';
 }
 
-$headers->endPage();
+$application->header->endPage();

@@ -3,7 +3,7 @@
 use Fmw\Database;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -12,18 +12,16 @@ $direct = isset($_GET['direct']) ? mysql_tex($_GET['direct']) : '';
 
 switch ($action) {
     case "attacks":
-        attacks($db, $userId);
+        attacks($application->db, $userId);
         break;
     case "general":
     default:
-        general($db, $user, $userId, $delete, $direct);
+        general($application->db, $application->user, $userId, $delete, $direct);
         break;
 }
 
 function attacks(Database $db, int $userId): void
 {
-    global $db, $userId;
-
     print '
         <h3>Recent Battles</h3>
         <table width=95% cellpadding=1 cellspacing=0 class=table>
@@ -93,4 +91,4 @@ function general(Database $db, array $user, int $userId, int $delete, string $di
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

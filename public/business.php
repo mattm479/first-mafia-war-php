@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 1, $nhsp = 1, $nlck = 1);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -23,23 +23,23 @@ $quantity = isset($_POST['quant']) ? mysql_num($_POST['quant']) : 0;
 
 switch ($action) {
     case "purchase":
-        purchase($db, $headers, $user, $userId, $busId, $itemId, $itemCost, $owner, $quantity);
+        purchase($application->db, $application->header, $application->user, $userId, $busId, $itemId, $itemCost, $owner, $quantity);
         break;
     case "shcreate":
-        shop_create($db, $user, $businessAuto, $businessName, $businessId, $description, $location, $modified, $owner);
+        shop_create($application->db, $application->user, $businessAuto, $businessName, $businessId, $description, $location, $modified, $owner);
         break;
     case "shstocki":
-        shop_stock($db, $headers, $businessId, $itemId, $itemCost);
+        shop_stock($application->db, $application->header, $businessId, $itemId, $itemCost);
         break;
     case "sptuneup":
-        special_tuneup($db, $headers, $user, $userId, $tuneUp);
+        special_tuneup($application->db, $application->header, $application->user, $userId, $tuneUp);
         break;
     case "spgetcar":
-        special_get_car($db, $headers, $user, $userId);
+        special_get_car($application->db, $application->header, $application->user, $userId);
         break;
     case "shopping":
     default:
-        shopping($db, $headers, $user, $userId, $businessId);
+        shopping($application->db, $application->header, $application->user, $userId, $businessId);
         break;
 }
 
@@ -354,4 +354,4 @@ function shop_stock(Database $db, Header $headers, int $businessId, int $itemId,
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

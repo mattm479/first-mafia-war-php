@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
 $cid = isset($_GET['cid']) ? mysql_num($_GET['cid']) : 0;
@@ -14,26 +14,26 @@ $type = isset($_POST['type']) ? mysql_tex($_POST['type']) : '';
 $mafiosoID = isset($_POST['mafiosoID']) ? mysql_num($_POST['mafiosoID']) : 0;
 $contactID = isset($_POST['contactID']) ? mysql_num($_POST['contactID']) : 0;
 
-$row = mysqli_fetch_assoc($db->query("SELECT clContact, count(clID) AS countValue FROM contactList WHERE clType = 'friend' AND clContact = {$userId} GROUP BY clContact ORDER BY countValue DESC LIMIT 1"));
+$row = mysqli_fetch_assoc($application->db->query("SELECT clContact, count(clID) AS countValue FROM contactList WHERE clType = 'friend' AND clContact = {$userId} GROUP BY clContact ORDER BY countValue DESC LIMIT 1"));
 $friends = $row['countValue'] ?? 0;
 if ($friends < 0) {
     $friends = 0;
 }
 
-$row = mysqli_fetch_assoc($db->query("SELECT clContact, count(clID) AS countValue FROM contactList WHERE clType = 'enemy' AND clContact = {$userId} GROUP BY clContact ORDER BY countValue DESC LIMIT 1"));
+$row = mysqli_fetch_assoc($application->db->query("SELECT clContact, count(clID) AS countValue FROM contactList WHERE clType = 'enemy' AND clContact = {$userId} GROUP BY clContact ORDER BY countValue DESC LIMIT 1"));
 $enemies = $row['countValue'] ?? 0;
 if ($enemies < 0) {
     $enemies = 0;
 }
 
-if ($user['donatordays'] == 0) {
+if ($application->user['donatordays'] == 0) {
     print '
         <h3>Friends &amp; Enemies</h3>
         <p>The ability to vote for friends and enemies is restricted to donators.</p>
         <p><a href=\'donator.php\'>Donate to the game</a> or <a href=\'index.php\'>Head on home</a>.</p>
     ';
 
-    $headers->endpage();
+    $application->header->endPage();
     exit;
 }
 
@@ -45,7 +45,7 @@ print '
 
 switch ($action) {
     case "adddo":
-        add_do($db, $headers, $userId, $mafiosoID, $note, $type);
+        add_do($application->db, $application->header, $userId, $mafiosoID, $note, $type);
         break;
     case "addenemy":
         add_enemy($mid);
@@ -54,17 +54,17 @@ switch ($action) {
         add_friend($mid);
         break;
     case "changenote":
-        change_note($db, $headers, $userId, $cid);
+        change_note($application->db, $application->header, $userId, $cid);
         break;
     case "changenotedo":
-        change_note_do($db, $headers, $userId, $contactID, $note);
+        change_note_do($application->db, $application->header, $userId, $contactID, $note);
         break;
     case "remove":
-        remove_contact($db, $headers, $userId, $cid);
+        remove_contact($application->db, $application->header, $userId, $cid);
         break;
     case "view":
     default:
-        view_lists($db, $userId);
+        view_lists($application->db, $userId);
         break;
 }
 
@@ -328,4 +328,4 @@ function view_lists($db, $userId): void
     print '</table>';
 }
 
-$headers->endpage();
+$application->header->endPage();

@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -21,52 +21,52 @@ $cha = isset($_POST['cha']) ? mysql_num($_POST['cha']) : 0;
 
 switch ($action) {
     case 'birthday' :
-        birthday($headers, $user);
+        birthday($application->header, $application->user);
         break;
     case 'birthdaydo' :
-        birthday_do($db, $userId, $mth, $day, $cha);
+        birthday_do($application->db, $userId, $mth, $day, $cha);
         break;
     case 'gym':
-        gym($user);
+        gym($application->user);
         break;
     case 'gymdo':
-        gymdo($db, $headers, $user, $userId, $agi, $gua, $str, $lab);
+        gymdo($application->db, $application->header, $application->user, $userId, $agi, $gua, $str, $lab);
         break;
     case 'donor':
-        conf_donor($user);
+        conf_donor($application->user);
         break;
     case 'donor2':
-        do_donor($db, $user, $userId);
+        do_donor($application->db, $application->user, $userId);
         break;
     case 'sexchange2':
-        do_sex_change($db, $user, $userId);
+        do_sex_change($application->db, $application->user, $userId);
         break;
     case 'sexchange':
-        conf_sex_change($user);
+        conf_sex_change($application->user);
         break;
     case 'passchange2':
-        do_pass_change($db, $user, $userId);
+        do_pass_change($application->db, $application->user, $userId);
         break;
     case 'passchange':
         pass_change();
         break;
     case 'signaturechange':
-        signature_change($user);
+        signature_change($application->user);
         break;
     case 'dosignaturechange':
-        do_signature_change($db, $userId, $newsignature);
+        do_signature_change($application->db, $userId, $newsignature);
         break;
     case 'picchange2':
-        do_pic_change($db, $userId);
+        do_pic_change($application->db, $userId);
         break;
     case 'picchange':
-        pic_change($user);
+        pic_change($application->user);
         break;
     case 'forumchange2':
-        do_forum_change($db, $userId, $forumSig, $forumMug);
+        do_forum_change($application->db, $userId, $forumSig, $forumMug);
         break;
     case 'forumchange':
-        forum_change($user);
+        forum_change($application->user);
         break;
     default:
         header('Refresh:0; url=home.php');
@@ -408,4 +408,4 @@ function do_forum_change(Database $db, int $userId, string $forumSig, string $fo
     ';
 }
 
-$headers->endpage();
+$application->header->endPage();

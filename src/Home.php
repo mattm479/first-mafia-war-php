@@ -144,6 +144,7 @@ class Home
                 }
 
                 $lt = itemType($row['itmtype']);
+                $items = [];
             }
 
             $row['item_info'] = itemInfo($row['itmid']);

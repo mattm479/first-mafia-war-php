@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user;
+global $application;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -21,25 +21,25 @@ $useid = isset($_POST['useid']) ? mysql_num($_POST['useid']) : 0;
 
 switch ($action) {
     case 'equp':
-        equip($db, $headers, $user, $iid);
+        equip($application->db, $application->header, $application->user, $iid);
         break;
     case 'remo':
-        remo($db, $headers, $user, $iid);
+        remo($application->db, $application->header, $application->user, $iid);
         break;
     case 'sell':
-        sell($db, $headers, $user, $fid, $iid, $uid, $qty);
+        sell($application->db, $application->header, $application->user, $fid, $iid, $uid, $qty);
         break;
     case 'sen2':
-        sen2($db, $headers, $user, $familyId, $inventoryId, $quantity, $recfa, $recus, $useid);
+        sen2($application->db, $application->header, $application->user, $familyId, $inventoryId, $quantity, $recfa, $recus, $useid);
         break;
     case 'use2':
-        use2($db, $headers, $user, $familyId, $inventoryId, $quantity, $useid, $recus);
+        use2($application->db, $application->header, $application->user, $familyId, $inventoryId, $quantity, $useid, $recus);
         break;
     case 'util':
-        util($db, $headers, $user, $familyId, $iid, $quantity, $uid);
+        util($application->db, $application->header, $application->user, $familyId, $iid, $quantity, $uid);
         break;
     default:
-        info($db, $headers, $iid);
+        info($application->db, $application->header, $iid);
         break;
 }
 
@@ -1459,7 +1459,7 @@ function util(Database $db, Header $headers, array $user, int $familyId, int $ii
     if ($row['itmBasePrice'] > 0) {
         $payment = round($row['itmBasePrice'] * 0.8);
         if ($row['itmid'] == 5) {
-            $payment = $r['itmBasePrice'];
+            $payment = $row['itmBasePrice'];
         }
 
         print '
@@ -1485,4 +1485,4 @@ function util(Database $db, Header $headers, array $user, int $familyId, int $ii
     print '</table>';
 }
 
-$headers->endpage();
+$application->header->endPage();

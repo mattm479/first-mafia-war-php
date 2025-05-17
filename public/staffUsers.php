@@ -4,7 +4,7 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "sglobals.php";
-global $db, $headers, $user, $userId;
+global $application;
 pagePermission($lgn = 1, $stff = 1, $njl = 0, $nhsp = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -21,59 +21,59 @@ $yno = isset($_POST['yno']) ? mysql_tex($_POST['yno']) : '';
 
 switch ($action) {
     case 'accapprove':
-        account_approve($db, $user, $mid);
+        account_approve($application->db, $application->user, $mid);
         break;
     case 'accflogout':
-        account_logout($db, $user, $mid);
+        account_logout($application->db, $application->user, $mid);
         break;
     case 'accsuspend':
-        account_suspend($db, $user, $mid);
+        account_suspend($application->db, $application->user, $mid);
         break;
     case 'accdeleted':
-        account_delete($db, $headers, $user, $uid, $yno);
+        account_delete($application->db, $application->header, $application->user, $uid, $yno);
         break;
     case 'grpgivform':
-        group_giving_form($db, $user);
+        group_giving_form($application->db, $application->user);
         break;
     case 'grpgivsubm':
-        group_giving_submit($db, $user, $csh, $grp, $itm, $rsp, $txt);
+        group_giving_submit($application->db, $application->user, $csh, $grp, $itm, $rsp, $txt);
         break;
     case 'indgivform':
-        individual_giving_form($db, $user);
+        individual_giving_form($application->db, $application->user);
         break;
     case 'indgivsubm':
-        individual_giving_submit($db, $user, $csh, $itm, $rsp, $txt, $uid);
+        individual_giving_submit($application->db, $application->user, $csh, $itm, $rsp, $txt, $uid);
         break;
     case 'ipsrchform':
-        ip_search_form($db, $user);
+        ip_search_form($application->db, $application->user);
         break;
     case 'mafiosofrm':
-        mafioso_form($db, $user, $uid);
+        mafioso_form($application->db, $application->user, $uid);
         break;
     case 'mafiososub':
-        mafioso_sub($db, $user, $txt, $tx2, $uid);
+        mafioso_sub($application->db, $application->user, $txt, $tx2, $uid);
         break;
     case 'edituser':
-        edit_user_begin($user);
+        edit_user_begin($application->user);
         break;
     case 'edituserform':
-        edit_user_form($db, $user);
+        edit_user_form($application->db, $application->user);
         break;
     case 'editusersub':
-        edit_user_sub($db, $headers, $user);
+        edit_user_sub($application->db, $application->header, $application->user);
         break;
     case 'watchfuleye':
-        watchful_eye($db, $user);
+        watchful_eye($application->db, $application->user);
         break;
     case 'begin_watch':
-        watchful_eye_begin($db, $user, $mid);
+        watchful_eye_begin($application->db, $application->user, $mid);
         break;
     case 'end_watchin':
-        watchful_eye_end($db, $user, $mid);
+        watchful_eye_end($application->db, $application->user, $mid);
         break;
     case 'ipsrchsubm':
     default:
-        ip_search_submit($db, $user, $ips);
+        ip_search_submit($application->db, $application->user, $ips);
         break;
 }
 
@@ -749,4 +749,4 @@ function watchful_eye_end(Database $db, array $user, int $mid): void
     ";
 }
 
-$headers->endpage();
+$application->header->endPage();

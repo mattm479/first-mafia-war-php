@@ -4,13 +4,13 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
 $poll = isset($_POST['poll']) ? mysql_num($_POST['poll']) : 0;
 $choice = isset($_POST['choice']) ? mysql_num($_POST['choice']) : 0;
-$user['pollVote'] = isset($user['pollVote']) ? unserialize($user['pollVote']) : '';
+$application->user['pollVote'] = isset($application->user['pollVote']) ? unserialize($application->user['pollVote']) : '';
 
 print '
     <h3>Polling Booth</h3><br>
@@ -22,15 +22,15 @@ print '
 
 switch ($action) {
     case 'view':
-        view($db);
+        view($application->db);
         break;
     case 'poll':
     default:
-        poll($db, $headers, $user, $userId, $poll, $choice);
+        poll($application->db, $application->header, $application->user, $userId, $poll, $choice);
         break;
 }
 
-function poll(Database $db, Header $headers, array $user,int $userId, int $poll, int $choice): void
+function poll(Database $db, Header $headers, array $user, int $userId, int $poll, int $choice): void
 {
     print '<p>Please cast your vote and <a href=\'polling.php?action=view\'>view previous polls</a>.</p> ';
 
@@ -195,4 +195,4 @@ function view(Database $db): void
     }
 }
 
-$headers->endpage();
+$application->header->endPage();

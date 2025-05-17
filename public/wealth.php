@@ -4,29 +4,29 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "globals.php";
-global $db, $headers, $user, $userId;
+global $application, $userId;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $act = mysql_tex($_GET['act']);
-$amt = mysql_num($_GET['amt']);
+$amt = isset($_GET['amt']) ? mysql_num($_GET['amt']) : 0;
 $use = mysql_tex($_GET['use']);
 $mid = mysql_num($_GET['mid']);
 
 switch ($act) {
     case "genergy":
-        gainEnergy($db, $headers, $user, $userId);
+        gainEnergy($application->db, $application->header, $application->user, $userId);
         break;
     case "prestig":
-        prestige($db, $headers, $user, $userId);
+        prestige($application->db, $application->header, $application->user, $userId);
         break;
     case "disresp":
-        disrespect($db, $user, $userId, $mid);
+        disrespect($application->db, $application->user, $userId, $mid);
         break;
     case "respect":
-        respect($db, $headers, $user, $userId, $mid);
+        respect($application->db, $application->header, $application->user, $userId, $mid);
         break;
     case "sendwea":
-        sendWealth($db, $headers, $user, $userId, $amt, $mid, $use);
+        sendWealth($application->db, $application->header, $application->user, $userId, $amt, $mid, $use);
         break;
 }
 
@@ -234,4 +234,4 @@ function sendWealth(Database $db, Header $headers, array $user, int $userId, int
     print '</table>';
 }
 
-$headers->endpage();
+$application->header->endPage();

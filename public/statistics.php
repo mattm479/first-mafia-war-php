@@ -1,6 +1,6 @@
 <?php
 require_once "globals.php";
-global $db, $headers;
+global $application;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0);
 
 print '
@@ -9,13 +9,13 @@ print '
 ';
 
 // Members
-$members = mysqli_num_rows($db->query("SELECT userid FROM users WHERE rankCat = 'Player'"));
-$membdonat = mysqli_num_rows($db->query("SELECT userid FROM users WHERE rankCat = 'Player' AND donatordays > 0"));
-$membrefer = mysqli_num_rows($db->query("SELECT refID FROM referals"));
-$membfamil = mysqli_num_rows($db->query("SELECT userid FROM users WHERE rankCat = 'Player' AND gang > 0"));
-$male = mysqli_num_rows($db->query("SELECT userid FROM users WHERE rankCat = 'Player' AND gender = 'Male'"));
-$fem = mysqli_num_rows($db->query("SELECT userid FROM users WHERE rankCat = 'Player' AND gender = 'Female'"));
-$fam = mysqli_num_rows($db->query("SELECT famID FROM family WHERE famID != 1 AND famRespect > 0"));
+$members = mysqli_num_rows($application->db->query("SELECT userid FROM users WHERE rankCat = 'Player'"));
+$membdonat = mysqli_num_rows($application->db->query("SELECT userid FROM users WHERE rankCat = 'Player' AND donatordays > 0"));
+$membrefer = mysqli_num_rows($application->db->query("SELECT refID FROM referals"));
+$membfamil = mysqli_num_rows($application->db->query("SELECT userid FROM users WHERE rankCat = 'Player' AND gang > 0"));
+$male = mysqli_num_rows($application->db->query("SELECT userid FROM users WHERE rankCat = 'Player' AND gender = 'Male'"));
+$fem = mysqli_num_rows($application->db->query("SELECT userid FROM users WHERE rankCat = 'Player' AND gender = 'Female'"));
+$fam = mysqli_num_rows($application->db->query("SELECT famID FROM family WHERE famID != 1 AND famRespect > 0"));
 
 print '
     <h5>Users</h5>
@@ -29,19 +29,19 @@ print '
 ';
 
 // Wealth
-$rres = mysqli_fetch_assoc($db->query("SELECT sum(respect) AS sumRespect FROM users WHERE rankCat = 'Player'"));
+$rres = mysqli_fetch_assoc($application->db->query("SELECT sum(respect) AS sumRespect FROM users WHERE rankCat = 'Player'"));
 $avgres = round($rres['sumRespect'] / $members);
-$rfam = mysqli_fetch_assoc($db->query("SELECT sum(famVaultCash) AS sumFamily FROM family WHERE famID != 1 AND famRespect > 0"));
+$rfam = mysqli_fetch_assoc($application->db->query("SELECT sum(famVaultCash) AS sumFamily FROM family WHERE famID != 1 AND famRespect > 0"));
 $avgfam = round($rfam['sumFamily'] / $fam);
-$rmon = mysqli_fetch_assoc($db->query("SELECT sum(money) AS sumMoney FROM users WHERE rankCat = 'Player'"));
+$rmon = mysqli_fetch_assoc($application->db->query("SELECT sum(money) AS sumMoney FROM users WHERE rankCat = 'Player'"));
 $avgmon = round($rmon['sumMoney'] / $members);
-$rchk = mysqli_fetch_assoc($db->query("SELECT sum(moneyChecking) AS sumChecking FROM users WHERE rankCat = 'Player'"));
+$rchk = mysqli_fetch_assoc($application->db->query("SELECT sum(moneyChecking) AS sumChecking FROM users WHERE rankCat = 'Player'"));
 $avgchk = round($rchk['sumChecking'] / $members);
-$rsav = mysqli_fetch_assoc($db->query("SELECT sum(moneySavings) AS sumSavings FROM users WHERE rankCat = 'Player'"));
+$rsav = mysqli_fetch_assoc($application->db->query("SELECT sum(moneySavings) AS sumSavings FROM users WHERE rankCat = 'Player'"));
 $avgsav = round($rsav['sumSavings'] / $members);
-$rinv = mysqli_fetch_assoc($db->query("SELECT sum(moneyInvest) AS sumInvest FROM users WHERE rankCat = 'Player'"));
+$rinv = mysqli_fetch_assoc($application->db->query("SELECT sum(moneyInvest) AS sumInvest FROM users WHERE rankCat = 'Player'"));
 $avginv = round($rinv['sumInvest'] / $members);
-$rtre = mysqli_fetch_assoc($db->query("SELECT sum(moneyTreasury) AS sumTreasury FROM users WHERE rankCat = 'Player'"));
+$rtre = mysqli_fetch_assoc($application->db->query("SELECT sum(moneyTreasury) AS sumTreasury FROM users WHERE rankCat = 'Player'"));
 $avgtre = round($rtre['sumTreasury'] / $membdonat);
 
 $sumWealth = $rmon['sumMoney'] + $rchk['sumChecking'] + $rsav['sumSavings'] + $rinv['sumInvest'] + $rtre['sumTreasury'];
@@ -62,12 +62,12 @@ print '
 ';
 
 // Items 
-$ritm = mysqli_fetch_assoc($db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid"));
-$rwep = mysqli_fetch_assoc($db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid WHERE it.itmtype IN (65, 70, 80)"));
-$rger = mysqli_fetch_assoc($db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid WHERE it.itmtype IN (20, 30)"));
-$rnor = mysqli_fetch_assoc($db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid WHERE it.itmtype = 40"));
-$rcon = mysqli_fetch_assoc($db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid WHERE it.itmtype = 10"));
-$rmat = mysqli_fetch_assoc($db->query("SELECT sum(inv_qty) AS sumItems FROM inventory WHERE inv_itemid = 5"));
+$ritm = mysqli_fetch_assoc($application->db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid"));
+$rwep = mysqli_fetch_assoc($application->db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid WHERE it.itmtype IN (65, 70, 80)"));
+$rger = mysqli_fetch_assoc($application->db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid WHERE it.itmtype IN (20, 30)"));
+$rnor = mysqli_fetch_assoc($application->db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid WHERE it.itmtype = 40"));
+$rcon = mysqli_fetch_assoc($application->db->query("SELECT sum(i.inv_qty) AS sumItems FROM inventory i LEFT JOIN items it ON i.inv_itemid = it.itmid WHERE it.itmtype = 10"));
+$rmat = mysqli_fetch_assoc($application->db->query("SELECT sum(inv_qty) AS sumItems FROM inventory WHERE inv_itemid = 5"));
 
 print '
     <h5>Items</h5>
@@ -81,11 +81,11 @@ print '
 ';
 
 // Communication
-$totala = mysqli_num_rows($db->query("SELECT laID FROM logsAttacks"));
-$totalf = mysqli_num_rows($db->query("SELECT fpID FROM forumPosts"));
-$totale = mysqli_num_rows($db->query("SELECT leID FROM logsEvents"));
-$totalm = mysqli_num_rows($db->query("SELECT mail_id FROM mail"));
-$totaln = mysqli_num_rows($db->query("SELECT newsID FROM news"));
+$totala = mysqli_num_rows($application->db->query("SELECT laID FROM logsAttacks"));
+$totalf = mysqli_num_rows($application->db->query("SELECT fpID FROM forumPosts"));
+$totale = mysqli_num_rows($application->db->query("SELECT leID FROM logsEvents"));
+$totalm = mysqli_num_rows($application->db->query("SELECT mail_id FROM mail"));
+$totaln = mysqli_num_rows($application->db->query("SELECT newsID FROM news"));
 
 print '
     <h5>Communication</h5>
@@ -98,4 +98,4 @@ print '
     </p>
 ';
 
-$headers->endpage();
+$application->header->endPage();

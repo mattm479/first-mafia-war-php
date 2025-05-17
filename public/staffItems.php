@@ -4,27 +4,27 @@ use Fmw\Database;
 use Fmw\Header;
 
 require_once "sglobals.php";
-global $db, $headers, $user, $userId;
+global $application;
 pagePermission($lgn = 1, $stff = 1, $njl = 0, $nhsp = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
 
 switch ($action) {
     case 'newitem':
-        new_item($userId);
+        new_item($application->user['userid']);
         break;
     case 'createitem':
-        create_item($db, $userId);
+        create_item($application->db, $application->user['userid']);
         break;
     case 'giveitem':
-        give_item_form($db, $user);
+        give_item_form($application->db, $application->user);
         break;
     case 'giveitemsub':
-        give_item_submit($user);
+        give_item_submit($application->user);
         break;
     case 'viewitems':
     default:
-        view_items($db, $headers, $user);
+        view_items($application->db, $application->header, $application->user);
         break;
 }
 
@@ -310,4 +310,4 @@ function itemAbility(string $on = 'on', string $ab = 'ab', string $dr = 'dr', st
     ';
 }
 
-$headers->endpage();
+$application->header->endPage();

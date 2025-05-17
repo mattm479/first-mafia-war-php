@@ -1,0 +1,15 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Estate Agent</h3>
+    <div class=floatright>
+        <img src='assets/images/photos/livingRoom.jpg' width=250 height=284 alt='Living Room'>
+    </div>
+    {% if data.error == "CAN_NOT_SELL" %}
+        <p>You already live in the worst property and cannot sell it.</p>
+        <p><a href='estate.php?action=view'>Back</a></p>
+    {% else %}
+        <p>You sold your {{ data.house }} for {{ data.price }} and went back to your hovel.</p>
+        <p><a href='estate.php?action=view'>Back</a></p>
+    {% endif %}
+{% endblock %}

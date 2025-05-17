@@ -3,7 +3,7 @@
 use Fmw\Database;
 
 require_once "globals.php";
-global $db, $headers, $user;
+global $application;
 pagePermission($lgn = 1, $stff = 0, $njl = 0, $nhsp = 0, $nlck = 0);
 
 $action = isset($_GET['action']) ? mysql_tex($_GET['action']) : '';
@@ -19,7 +19,7 @@ switch ($action) {
         proxy();
         break;
     case "test":
-        test($db, $user);
+        test($application->db, $application->user);
         break;
     case "rules":
     default:
@@ -153,4 +153,4 @@ function help_rules(): void
     ';
 }
 
-$headers->endpage();
+$application->header->endPage();
