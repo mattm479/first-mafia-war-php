@@ -1,0 +1,94 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Visit the Casinos of Monte Carlo</h3>
+    <div class=floatright><img src='assets/images/photos/casino.jpg' height=420 width=295 alt=Casino></div>
+    {% if data.error == 'NOT_ENOUGH_RESPECT' %}
+        <h3>No Respect</h3>
+        <p>You must have <em>some</em> Respect to even consider such an important visit. You could try voting, crime, or asking for Respect from your peers.</p>
+        <p><a href='explore.php'>Head to town</a> or <a href='home.php'>head on home</a>.</p>
+    {% elseif data.error == 'NO_MORE_VISITS' %}
+        <h3>No more visits</h3>
+        <p>You may only visit a limited number of special locations at a time. Please try again later after you have rested.</p>
+        <p><a href='explore.php'>Head to town</a> or <a href='home.php'>head on home</a>.</p>
+    {% elseif data.error == 'WRONG_LOCATION' %}
+        <p>You may only visit the Casino while in Monte Carlo.</p>
+        <p><a href='explore.php'>Go to town</a> or <a href='home.php'>home</a>.</p>
+    {% elseif data.error == 'NOT_ENOUGH_ENERGY' %}
+        <p>You need more Energy to hunt down the family member you need.</p>
+        <p><a href='explore.php'>Return home and rest a while</a></p>
+    {% elseif data.error == 'NOT_ENOUGH_MONEY' %}
+        <p>You must have a little Respect and a ton of cash (not just the fee) to visit the Casino.</p>
+        <p><a href='explore.php'>Head to town</a></p>
+    {% else %}
+        {% if data.bribe %}
+            <p>Monte Carlo is world known for beautiful and incredibly wealthy Casinos. Here you will meet people who are hard to meet so readily elsewhere. You can also dramatically expand your own wealth.</p>
+            <p>All it costs is a small pile of cash <strong>and one Token of Respect</strong> (the Family does not like degenerate gamblers). You will need to spend about ${{ data.bribe }} to get in the door and place your bet, but you will also need extra to keep going. Are you ready?</p>
+            <p><a href='visit.php?action=casino&visit=1'>Head on in!</a> &nbsp;&middot;&nbsp; <a href='explore.php'>No thanks, I\'ll head back to town.</a></p>
+        {% else %}
+            {% if data.reward == 1 %}
+                <p>You won early on, but like most degenerate gamblers, you didn't know when to stop. You lost big. You lost face and a lot of cash.</p>
+                {% if data.user.money < data.stole %}
+                    <p>You lost your entire bankroll and a Token of Respect.</p>
+                {% else %}
+                    <p>You didn't lose everything, only ${{ data.formatted_stole }} and a Token of Respect.</p>
+                {% endif %}
+            {% elseif data.reward == 2 %}
+                <p>You won a ton of cash, and in your excitement you lorded it over everyone. Bad form. By the end of the day you lost some of your financial gains but the bad taste remained in everyone\'s memory.</p>
+                <p>You lose one Token of Respect but still keep ${{ data.formatted_lot }}.</p>
+            {% elseif data.reward == 3 %}
+                <p>You spend a wonderful evening gambling and having fun, but you really have little success—or failure.</p>
+                <p>After a fun few hours all you have is what you walked in with, and pleasant memories.</p>
+            {% elseif data.reward == 4 %}
+                <p>You had a great start, but like many gamblers you did not know when to stop. By the time you figured it out, you lost most of your gains. You still leave with a little scratch, though.</p>
+                <p>You pick up ${{ data.formatted_dec }} cash in your gambling.</p>
+            {% elseif data.reward == 5 or data.reward == 6 or data.reward == 7 or data.reward == 8 %}
+                <p>You had a fun time, but with little gain. It's time to get back to the business of running a Family, and you have a few bucks to help.</p>
+                <p>You pick up ${{ data.formatted_man }} cash in your gambling.</p>
+            {% elseif data.reward == 9 or data.reward == 10 or data.reward == 11 %}
+                <p>You get a little hung up in the place (so pretty!) and stumble into the sunshine many hours after you planned. You made a decent bit of cash from your trouble—but you found little support for your cause.</p>
+                <p>You gain ${{ data.formatted_lot }} cash to continue your plans.</p>
+            {% elseif data.reward == 12 %}
+                <p>You manage to make it into some of the back rooms. You introduce yourself to a number of influential people but make no firm contacts. The stakes back there are high though—so you do very well financially.</p>
+                <p>You win ${{ data.formatted_ton }} in cash.</p>
+            {% elseif data.reward == 13 %}
+                <p>You manage to make it into THE back room. The stakes are high, and with your skill you do very well financially.</p>
+                <p>You win ${{ data.formatted_ton }} and they are kind enough to put it directly in your checking account.</p>
+            {% elseif data.reward == 14 or data.reward == 15 %}
+                {% if data.option == 1 %}
+                    <p>You dropped the opposition like fifth period French. In your own way you make up for it, and the Detective appreciates it greatly.</p>
+                    <p>You gain a contact, {{ data.item_info|raw }}.</p>
+                {% else %}
+                    <p>You dropped the opposition like fifth period French. In your own way you make up for it, and the Surgeon appreciates it greatly.</p>
+                    <p>You gain a contact, {{ data.item_info|raw }}.</p>
+                {% endif %}
+            {% elseif data.reward == 16 %}
+                {%  if data.option == 1 %}
+                    <p>You walk the casino and begin to wonder...You could run this. It is just like any other business you have been involved in. A Chief of Medicine points out that aggressive control can work wonders.</p>
+                    <p>The {{ data.item_info|raw }} offers to help you later.</p>
+                {% else %}
+                    <p>You walk the casino and begin to wonder...You could run this. It is just like any other business you have been involved in. A Consiglieri points out that aggressive control can work wonders.</p>
+                    <p>The {{ data.item_info|raw }} offers to help you later.</p>
+                {% endif %}
+            {% elseif data.reward == 17 %}
+                <p>As you move even more smoothly through the Casino, you meet more and more fine folks. You have begun to plot against the current manager. Oh yes, it will be yours. A swell guy makes a few helpful suggestions.</p>
+                <p>The {{ data.item_info|raw }} also offers to help you later if you need it.</p>
+            {% elseif data.reward == 18 %}
+                <p>While playing poker, you meet a very strange opponent. She was very tough, but in the end - you do manage to pull it off. However, on the last hand, she runs out of cash and offers a set of keys to a storage locker. You're generous and take it.</p>
+                <p>There was a bunch of trash, but also a {{ data.item_info|raw }}. Nice.</p>
+            {% elseif data.reward == 19 or data.reward == 20 %}
+                {% if data.option == 1 or data.option == 2 or data.option == 3 %}
+                    <p>While playing poker, you meet a very strange opponent. She was very tough, but in the end - you do manage to pull it off. However, on the last hand, she runs out of cash and offers a set of keys to a storage locker. You're generous and take it.</p>
+                    <p>There was a bunch of trash, but also a {{ data.item_info|raw }}. Nice.</p>
+                {% elseif data.option == 4 or data.option == 5 or data.option == 6 %}
+                    <p>Well, you ALMOST made it into the back room, but the stain on your lapel kept you out. You hunt down the hotel tailor and get proper Italian Formal Wear. Just in case, you rent it for 2 days to cover any unexpected visits.</p>
+                    <p>You gain {{ data.item_info|raw }}.</p>
+                {% else %}
+                    <p>Incredible! Your knowledge, and a little luck, have attracted the attention of the Prince. He controls all gambling in Monte Carlo, and it is his approval you need to run your own Casino. You even get some time with his Accountant.</p>
+                    <p>The {{ data.item_info|raw }} even offers to help you later.</p>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        <p><a href='visit.php?action=casino&visit=1'>Visit the Casino again</a> or <a href='explore.php'>head back to town</a></p>
+    {% endif %}
+{% endblock %}

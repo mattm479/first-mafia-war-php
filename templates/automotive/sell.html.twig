@@ -1,0 +1,17 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Harry Maher's Used Car Lot</h3>
+    <p><em>Well, this is the first time the customer ever high-pressured the salesman.</em></p>
+    <div class=floatright>
+        <img src='assets/images/photos/usedCarLot.jpg' width=247 height=338 alt='Used Car Lot'>
+    </div>
+    <p>Welcome to the best place to buy cars anywhere in the world. Well, OK, the only place to buy cars anywhere in the world - it is a state of mind. We have a number of excellent cars here. Please pick the one you want and drive it home today!</p><p>Remember, your car and everything you buy for it, requires maintenance. Your banker will handle the payments (damn sticky fingers) but maintenance goes up a little every day you ignore your cars needs.</p>
+    {% if data.error == 'DO_NOT_OWN' %}
+        <p>You do not own that car. Stop trying to sell cars you do not own or I will have to call the Police.</p>
+        <p><a href='automotive.php'>Back to the lot</a></p>
+    {% else %}
+        <p>You sold your car for {{ data.trade_in }} and no longer have the expense of maintenance. However, your energy will now recover more slowly as you have to walk everywhere.</p>
+        <p><a href='home.php'>Walk home</a> or <a href='automotive.php'>buy another car</a></p>
+    {% endif %}
+{% endblock %}

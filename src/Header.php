@@ -2,8 +2,6 @@
 
 namespace Fmw;
 
-use JetBrains\PhpStorm\NoReturn;
-
 class Header
 {
     /**
@@ -168,55 +166,55 @@ class Header
 
     public function staffMenuArea(): void
     {
-        print '
-          <h6>General</h6>
-          <a href=\'staff.php\'>Home</a><br>
-          <a target=top href=\'http://www.firstmafiawar.com/wiki/doku.php?id=staff:index\'>Staff Wiki</a><br>
-          <hr>
-          <h6>Observation</h6>
-          <a href=\'staffLogs.php?action=attlog\'>Attacks</a><br>
-          <a href=\'staffLogs.php?action=eventlogs\'>Events</a><br>
-          <a href=\'staffUsers.php?action=ipsrchform&gtx=lastip\'>IP Check</a><br>
-          <a href=\'staffLogs.php?action=itmlogs\'>Items</a><br>
-          <a href=\'staffLogs.php?action=maillogs\'>Mail</a><br>
-          <a href=\'staffLogs.php?action=referrals\'>Referrals</a><br>
-          <a href=\'staffItems.php\'>View Items</a><br>
-          <a href=\'staffUsers.php?action=watchfuleye\'>Watchful Eye</a><br>
-          <a href=\'staffLogs.php?action=wealthlogs\'>Wealth</a><br>
-          <hr>
-          <h6>Game Controls</h6>
-          <a href=\'staff.php?action=mafiainquirer\'>Mafia Inquirer</a><br>
-          <a href=\'staff.php?action=streetfight\'>Street Fight</a><br>
-       ';
+        print "
+            <h6>General</h6>
+            <a href='staff.php'>Home</a><br>
+            <a target=top href='http://www.firstmafiawar.com/wiki/doku.php?id=staff:index'>Staff Wiki</a><br>
+            <hr>
+            <h6>Observation</h6>
+            <a href='staffLogs.php?action=attlog'>Attacks</a><br>
+            <a href='staffLogs.php?action=eventlogs'>Events</a><br>
+            <a href='staffUsers.php?action=ipsrchform&gtx=lastip'>IP Check</a><br>
+            <a href='staffLogs.php?action=itmlogs'>Items</a><br>
+            <a href='staffLogs.php?action=maillogs'>Mail</a><br>
+            <a href='staffLogs.php?action=referrals'>Referrals</a><br>
+            <a href='staffItems.php'>View Items</a><br>
+            <a href='staffUsers.php?action=watchfuleye'>Watchful Eye</a><br>
+            <a href='staffLogs.php?action=wealthlogs'>Wealth</a><br>
+            <hr>
+            <h6>Game Controls</h6>
+            <a href='staff.php?action=mafiainquirer'>Mafia Inquirer</a><br>
+            <a href='staff.php?action=streetfight'>Street Fight</a><br>
+       ";
 
         if ($this->_user['rankCat'] == 'Staff' && $this->_user['rank'] != 'Sgarrista') {
-            print '
-              <a href=\'staffPunish.php?action=gagform\'>Set Gag Order</a><br>
-              <a href=\'staffUsers.php?action=indgivform\'>Individual Giving</a><br>
-          ';
+            print "
+                <a href='staffPunish.php?action=gagform'>Set Gag Order</a><br>
+                <a href='staffUsers.php?action=indgivform'>Individual Giving</a><br>
+            ";
         }
 
         if ($this->_user['rank'] == 'Capo') {
-            print '
-            <a href=\'staffUsers.php?action=grpgivform\'>Group Giving</a><br>
-            <a href=\'staff.php?action=announce\'>Announcement</a><br>
-            <a href=\'staffUsers.php?action=edituser\'>Edit Mafioso</a><br>
-            <a href=\'staff.php?action=massmailer\'>Mass Mailer</a><br>
-            <a href=\'staff.php?action=poll\'>Polling</a><br>
-            <hr>
-            <h6>Lordly Might</h6>
-            <a href=\'staffLogs.php?action=donlog\'>Donation Logs</a><br>
-            <a href=\'staff.php?action=basicset\'>Settings</a><br>
-            <a href=\'staffItems.php?action=newitem\'>Create Item</a><br>
-          ';
+            print "
+                <a href='staffUsers.php?action=grpgivform'>Group Giving</a><br>
+                <a href='staff.php?action=announce'>Announcement</a><br>
+                <a href='staffUsers.php?action=edituser'>Edit Mafioso</a><br>
+                <a href='staff.php?action=massmailer'>Mass Mailer</a><br>
+                <a href='staff.php?action=poll'>Polling</a><br>
+                <hr>
+                <h6>Lordly Might</h6>
+                <a href='staffLogs.php?action=donlog'>Donation Logs</a><br>
+                <a href='staff.php?action=basicset'>Settings</a><br>
+                <a href='staffItems.php?action=newitem'>Create Item</a><br>
+          ";
         }
 
-        print '
-             <hr>
-             <br> ' . date('F j, Y') . '<br>' . date('g:i:s a') . '<br><br>
-          </div>
-          <div class=content>
-              <div class=floatright><a href=\'home.php\'>- return to game -</a></div>
-       ';
+        print "
+                <hr>
+                <br> " . date('F j, Y') . "<br>" . date('g:i:s a') . "<br><br>
+            </div>
+            <div class=content>
+                <div class=floatright><a href='home.php'>- return to game -</a></div>
+       ";
     }
 }

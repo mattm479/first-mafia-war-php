@@ -1,0 +1,17 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Harry Maher's Used Car Lot</h3>
+    <p><em>Well, this is the first time the customer ever high-pressured the salesman.</em></p>
+    <div class=floatright>
+        <img src='assets/images/photos/usedCarLot.jpg' width=247 height=338 alt='Used Car Lot'>
+    </div>
+    <p>Welcome to the best place to buy cars anywhere in the world. Well, OK, the only place to buy cars anywhere in the world - it is a state of mind. We have a number of excellent cars here. Please pick the one you want and drive it home today!</p><p>Remember, your car and everything you buy for it, requires maintenance. Your banker will handle the payments (damn sticky fingers) but maintenance goes up a little every day you ignore your cars needs.</p>
+    {% if data.error == 'NOT_ENOUGH_MONEY' %}
+        <p>You need more cash to buy that car and they are not taking credit.</p>
+        <p><a href='bank.php'>Visit the bank</a> or <a href='automotive.php'>buy a cheaper car</a></p>
+    {% else %}
+        <p>Congratulations on your new car. You purchased the {{ data.name }} for {{ data.price }}</p>
+        <p><a href='home.php'>Drive home</a></p>
+    {% endif %}
+{% endblock %}

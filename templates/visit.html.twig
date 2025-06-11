@@ -1,0 +1,97 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Visit the Don's Family</h3>
+    <div class=floatright><img src='assets/images/photos/don.jpg' height=344 width=163 alt='The Don'></div>
+    {% if data.error == 'NOT_ENOUGH_RESPECT' %}
+        <h3>No Respect</h3>
+        <p>You must have <em>some</em> Respect to even consider such an important visit. You could try voting, crime, or asking for Respect from your peers.</p>
+        <p><a href='explore.php'>Head to town</a> or <a href='home.php'>head on home</a>.</p>
+    {% elseif data.error == 'NO_MORE_VISITS' %}
+        <h3>No more visits</h3>
+        <p>You may only visit a limited number of special locations at a time. Please try again later after you have rested.</p>
+        <p><a href='explore.php'>Head to town</a> or <a href='home.php'>head on home</a>.</p>
+    {% elseif data.error == 'NOT_ENOUGH_ENERGY' %}
+        <p>You need more Energy to hunt down the family member you need.</p>
+        <p><a href='explore.php'>Return home and rest a while</a></p>
+    {% elseif data.error == 'NOT_ENOUGH_MONEY' %}
+        <p>Sorry, you must provide about ${{ data.formatted_money }} worth of gifts and bribes to visit the right person meaningfully.</p>
+        <p><a href='bank.php'>Head to the bank</a> or <a href='crime.php'>Do a little crime</a>.</p>
+    {% else %}
+        {% if data.bribes %}
+            <p>The best way to gain the respect of your Family is to impress them with your work and criminal activity—and to visit with them.</p>
+            <p>Today it will cost you about ${{ data.bribes }} in bribes (to get close to the right Family member) and gifts for that Family member as well as a little energy. You can only visit a few people a day though some special events permit additional visits.</p>
+            <p>Would you like to visit the Family?</p>
+            <p><a href='visit.php?action=don&visit=1'>Okay, buy some gifts</a> or <a href='explore.php'>head back to town</a>.</p>
+        {% else %}
+            {% if data.reward == 1 %}
+                <p>You visit the Don's Cousin. Unfortunately, he likes his cousin about as much as you like yours and the entire trip backfires. The Don yells at you publicly.</p>
+                <p>You lose a Token of Respect and spend ${{ data.stole }} in gifts to apologize.</p>
+            {% elseif data.reward == 2 %}
+                <p>You visit the Don's Family for a cup of bullets. Unfortunately, Johnny is out and you are left to fend for yourself.</p>
+                <p>You spend ${{ data.stole }} getting a box of grenades instead.</p>
+            {% elseif data.reward == 3 %}
+                <p>You are supposed to meet your Grandmother, but meet your cousin instead. As usual, he has a gang of thugs with him. "You're getting too big, and I'm going to take you down a peg." They proceed to rough you up a bit and dump you in the alley.</p>
+                <p>You get nothing for your time but a few bruises.</p>
+            {% elseif data.reward == 4 or data.reward == 5 or data.reward == 6 %}
+                <p>You have a wonderful coffee with the Don's own Mother. You impress her with your politeness and wit scoring points at every turn. Unfortunately, she's a little forgetful, and she speaks very highly of your Cousin instead of you.</p>
+                <p>The Consiglieri notice's though, and you still get a Token of Respect.</p>
+                {% if data.user.level < 100 %}
+                    <p>Further, he makes your Cousin wash your car!</p>
+                {% endif %}
+            {% elseif data.reward == 7 or data.reward == 8 or data.reward == 9 %}
+                <p>You visit the Don's Second Cousin. She is a little talkative from too much coffee, but OK. You get along fine, and for your politeness you gain respect in the eyes of your peers.</p>
+                <p>You receive a Token of Respect.</p>
+            {% elseif data.reward == 10 %}
+                <p>There is a bit of a scuffle in the outer hall, and a young man comes running from the house chased by two of the Don's house guards. You wave the man to you offering to help and punch him in the throat as he arrives. The guards haul him off and the Consiglieri waves you over.</p>
+                <p>You receive two Tokens of Respect for your quick thinking and quick reflexes.</p>
+            {% elseif data.reward == 11 %}
+                <p>You are escorted into the Don's office, but he is in a meeting. Recognizing the failure on the part of his staff, you quickly play it like you were sent with a brief message. You lean in, whisper an apology to the Don, and quickly leave the room. The guest thinks it is about him and the Don gains leverage — instead of embarrassment.</p>
+                <p>You receive three Tokens of Respect for your quick thinking.</p>
+            {% elseif data.reward == 12 %}
+                <p>You were there to visit the Don's Great-Uncle. He had to step out though, and you wait in his sick room. It smells of death in there. You give up and take off, but not before stealing his fruit cup.</p>
+                <p>You get a {{ data.item_info|raw }}.
+            {% elseif data.reward == 13 %}
+                <p>After a boring visit, you head down to play some cards with the guards and kill some time. You don't win much, but you do get some nice whiskey.</p>
+                <p>You get a {{ data.item_info|raw }}.
+            {% elseif data.reward == 14 %}
+                {% if data.option == 1 %}
+                    <p>You visited no one! You were unable to visit the Don's Mother as you had hoped. Turns out she is not feeling well. While you waited, you did talk up a Nurse.</p>
+                    <p>The {{ data.item_info|raw }} offers to help you later.</p>
+                {% else %}
+                    <p>You visited no one! You were unable to visit the Don's Mother as you had hoped. Turns out she was in a minor car accident. While you waited, you did chat with the Police who brought her safely home.</p>
+                    <p>The {{ data.item_info|raw }} offers to help you later.</p>
+                {% endif %}
+            {% elseif data.reward == 15 %}
+                {% if data.option == 1 %}
+                    <p>The Underbosses Sister smiles warmly at you. "I know why you're here," she says. She hands you a package. "Give this to my brother." She hands you an envelope and you deliver it. On the other end, you wait for a response but the brother isn\'t interested in you. He tosses you a couple packets of tea and tells you to get lost.</p>
+                    <p>You get a {{ data.item_info|raw }}, two of them.</p>
+                {% else %}
+                    <p>You managed to have coffee with the Don's Grandmother. For your wonderful gift, she promises to speak well of you to the Don. He decides you have done as you should and provides no additional benefit.</p>
+                    <p>You gain {{ data.item_info|raw }} though from the visit.</p>
+                {% endif %}
+            {% elseif data.reward == 16 %}
+                <p>Your Sisters Brother-in-law is an incredible eater. He routinely cannot eat all he makes though he makes <em>incredible</em> food. Every time you visit, you need a nap and a new belt.</p>
+                <p>He sends you home with a light snack for later.</p>
+            {% elseif data.reward == 17 %}
+                <p>Your Great Uncle is an incredible drunk. While you enjoy a luncheon of heavy black bread and soup (is that whiskey in there?) your Great Uncle tells you all sorts of stories from the old days. How many are true you do not know but it was very pleasurable.</p>
+                <p>For your enjoyment, he forces a flask of whiskey on you.</p>
+            {% elseif data.reward == 18 %}
+                <p>You managed to get some time with the Don's Consiglieri. He is very busy and appreciates your polite and fast talking. He sends you home with a little espresso to help you keep your energy up.</p>
+                <p>You get a {{ data.item_info|raw }} for the road.</p>
+            {% elseif data.reward == 19 or data.reward == 20 %}
+                {% if data.option == 1 %}
+                    <p>You managed to get some time with the Don's Consiglieri. He is very busy and appreciates your polite and fast talking. He sends you home with a little espresso to help you keep your energy up.</p>
+                    <p>You get a {{ data.item_info|raw }} for the road.</p>
+                {% elseif data.option == 2 %}
+                    <p>While rambling around the house, you run into a most unsavory character. Just your sort of person. A little dealing, and you land yourself a very nice bit of paperwork.</p>
+                    <p>You get a {{ data.item_info|raw }}.
+                {% else %}
+                    <p>You spend a little time with the Don's Consiglieri and the Don himself. On your way out, you have a lovely chat with the Consiglieri's Consiglieri.</p>
+                    <p>You meet a {{ data.item_info|raw }} who offers to teach you what they know.</p>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+        <p><a href='visit.php?action=don&visit=1'>Visit again</a> or <a href='explore.php'>head to town</a>.</p>
+    {% endif %}
+{% endblock %}

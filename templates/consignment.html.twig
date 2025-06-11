@@ -1,0 +1,45 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Consignment Market</h3>
+    <div class=floatright>
+        <br>
+        <img src='assets/images/photos/itemMarket.jpg' width=200 height=267 alt=Shop>
+    </div>
+    <table width=65% cellspacing=0 cellpadding=2 class=table style='font-size:smaller;'>
+        {% set item_type = '' %}
+        {% for item in data.items %}
+            {% if item_type != item.item_type %}
+                <tr><td colspan=4>&nbsp;</td></tr>
+                <tr>
+                    <th>{{ item.item_type }}</th>
+                    <th>Item</th>
+                    <th style='text-align:center;'>Price</th>
+                    <th style='text-align:center;'>Action</th>
+                </tr>
+                {% set item_type = item.item_type %}
+            {% endif %}
+            {% if data.userId == item.cmConsignor %}
+                <tr><td><strong> &middot; Consignment expires in {{ item.cmExpire }} days</strong></td>
+                {% set buycode = "<a href=consignmentMarket.php?action=remove&ID="~ item.cmID ~">Remove</a>" %}
+            {% else %}
+                <tr><td>{{ item.mafioso|raw }}</td>
+                {% set buycode = "<a href=consignmentMarket.php?action=buy&ID="~ item.cmID ~">Buy</a>" %}
+            {% endif %}
+            <td>{{ item.item_info|raw }}
+            {% if item.cmDaysLeft > 0 %}
+                <span title='days left'>&nbsp;({{ item.cmDaysLeft }})</span>
+            {% endif %}
+
+                </td><td style='text-align:right;'>
+                    {% if item.cmCurrency == 'cash' %}
+                        {{ item.cash_price }}
+                    {% else %}
+                        {{ item.token_price }}
+                    {% endif %}
+
+                </td><td class=center>{{ buycode|raw }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -14,9 +14,13 @@ class BaseClass implements BaseInterface
     }
 
     /**
+     * @param string $template
+     * @param array $data
+     * @return void
+     *
      * @throws Exception
      */
-    protected function render(string $template, array $data = []): void
+    public function render(string $template, array $data = []): void
     {
         try {
             $this->application->template->render($template, [

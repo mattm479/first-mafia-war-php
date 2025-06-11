@@ -1,0 +1,17 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>First Mafia War Bank</h3>
+    <div class=floatright>
+        <img src='assets/images/photos/bank.jpg' width=200 height=310 alt='Nice Teller'>
+    </div>
+    {% if data.error != '' %}
+        {{ data.error|raw }}
+    {% else %}
+        {% if data.free_transfer != '' %}
+            <p>{{ data.free_transfer }}</p>
+        {% endif %}
+        <p>You have successfully transferred {{ data.amount_transferred }}.</p>
+        <p><a href='bank.php'>Return to the bank</a></p>
+    {% endif %}
+{% endblock %}

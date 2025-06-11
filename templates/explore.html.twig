@@ -40,7 +40,6 @@
 
                 <h6>Things to do</h6>
                 <a href='streetfight.php'>Street Fight!</a><br>
-                <a href='gameHideSeek.php'>Hide &amp; Seek</a><br>
                 <a href='visit.php?action=don'>Visit the Don's Family</a><br>
 
                 {% if data.user.location == 1 %}
@@ -56,7 +55,7 @@
                 {% elseif data.user.location == 250 %}
                     <a href='visit.php?action=distillery'>Visit Meagher Distillery</a><br>
                 {% elseif data.user.location == 500 %}
-                    <a href=\'visit.php?action=plantation\'>Visit El Carmen Plantation</a><br>
+                    <a href='visit.php?action=plantation'>Visit El Carmen Plantation</a><br>
                 {% endif %}
             </td>
             <td valign=top>

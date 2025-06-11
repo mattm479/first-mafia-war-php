@@ -1,0 +1,16 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Consignment Market</h3>
+    <div class=floatright>
+        <br>
+        <img src='assets/images/photos/itemMarket.jpg' width=200 height=267 alt=Shop>
+    </div>
+    {% if data.error == 'NO_ITEM' %}
+        <p>This item does not exist, no longer exists, or you are not the owner and cannot remove it.</p>
+        <p><a href='consignmentMarket.php'>Return</a></p>
+    {% else %}
+        <p>You have removed the {{ data.item_name }} from the market and sacrificed your Consignment Fee.</p>
+        <p><a href='consignmentMarket.php'>Back</a></p>
+    {% endif %}
+{% endblock %}

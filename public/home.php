@@ -13,4 +13,4 @@ if ($update == 1) {
 }
 
 $home = new Home($application);
-$home->render();
+$home->index();

@@ -1,0 +1,77 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>First Mafia War Bank</h3>
+    <div class=floatright>
+        <img src='assets/images/photos/bank.jpg' width=200 height=310 alt='Nice Teller'>
+    </div>
+    <p>You currently have <strong>{{ data.accounts }}</strong> in your various accounts and {{ data.cash }} on hand.</p>
+    <p>What you are hiding in your mattress is anyone's guess.</p>
+    <table border=0 cellpadding=4 cellspacing=0 class=table>
+        <tr>
+            <td valign=top>
+                Cash on Hand<br>
+                Checking Account<br>
+                Savings Account<br>
+                Investments<br>
+                Treasury Bills
+            </td>
+            <td valign=top>{{ data.cash }}<br>{{ data.checking }}<br>{{ data.savings }}<br>{{ data.investment }}<br>{{ data.treasury }}</td>
+            <td valign=top><em>available<br>available<br>{{ data.savings_flag|raw }}<br>{{ data.investment_flag|raw }}<br>{{ data.treasury_flag|raw }}</em></td>
+        </tr>
+    </table>
+    <br>
+    <strong>Transfer Money</strong><br>
+    <form action='bank.php?act=transfer' method=POST>
+        <label for=from>from</label>
+        <select id=from name=from>
+            <option value='money'>Cash on Hand</option>
+            <option value='moneyChecking'>Checking Account</option>
+            {% if data.user.moneySavingsFlag == 0 and data.user.moneySavings > 0 %}
+                <option value='moneySavings'>Savings Account</option>
+            {% endif %}
+
+            {% if data.user.moneyInvestFlag == 0 and data.user.moneyInvest > 0 %}
+                <option value='moneyInvest'>Investments</option>
+            {% endif %}
+
+            {% if data.user.moneyTreasuryFlag == 0 and data.user.moneyTreasury > 0 %}
+                <option value='moneyTreasury'>Treasury Bills</option>
+            {% endif %}
+        </select>
+        <label for=to>to</label>
+        <select id=to name=to>
+            <option value='money'>Cash on Hand</option>
+            <option value='moneyChecking'>Checking Account</option>
+            <option value='moneySavings'>Savings Account</option>
+            {% if data.invest == 'yes' %}
+                <option value='moneyInvest'>Investments</option>
+            {% endif %}
+
+            {% if data.user['donatordays'] > 0 %}
+                <option value='moneyTreasury'>Treasury Bills</option>
+            {% endif %}
+        </select> &nbsp;
+        $<input type=number name=amount size=9> &nbsp;
+        <input type=submit value='Transfer'>
+    </form>
+    <br>
+    <p>ALL transfers require a $150 bribe to make sure it ends up in the right place unless you have a banker working for you.</p>
+
+    {% if data.invest == 'yes' %}
+        <p>You may, if you wish, tell your investment company to liquidate some of your holdings. The cost is about two days worth of interest (5%) but you will clear any withdrawal delay remaining on the funds. <a href='bank.php?act=clear'>Please clear the fund delay on my Investments</a>.</p>
+    {% endif %}
+
+    <hr width=90%>
+    <br>
+    <p>Banking institutions in the 1960's were large formal affairs and strictly regulated. You may have access to several different types of accounts depending on your position in society.</p>
+    <ul>
+        <li><em>Cash on Hand</em> &middot; You may use at any time, but it may be stolen easily in battle.</li>
+        <li><em>Checking Account</em> &middot; Though it does not earn interest, it is much harder to access by thieves.</li>
+        <li><em>Savings Account</em> &middot; Earns 1% interest per day (.04% compounded hourly) but you may only withdraw funds once a day.</li>
+        <li><em>Investments</em> &middot; Earns ~1.5% interest per day (.06% compounded hourly) but you may only withdraw funds once every 3 days.</li>
+        <li><em>Treasury Bills</em> &middot; Available only to Donators, T-Bills earn ~2.5% interest per day (0.1% compounded hourly) but you may only withdraw funds once every 3 days.</li>
+    </ul>
+    <br>
+    <p>Cash may be stolen in muggings. Bankers can tap into your Checking Account. Mob Accountants can tap into your Savings Account. All Accounts are susceptible to review by the Federal Regulators. Investments are immune to harassment by other players.</p>
+{% endblock %}

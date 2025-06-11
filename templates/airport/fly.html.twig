@@ -1,8 +1,22 @@
-{% extends '../layout/base.html.twig' %}
+{% extends 'layout/base.html.twig' %}
 
 {% block content %}
     <h3>Airport</h3>
     <div class='floatright'>
         <img src='assets/images/photos/passport.jpg' width=275 height=253 alt='Passport Photo'>
     </div>
+    {% if data.error == 'NOT_ENOUGH_MONEY' %}
+        <p>You need more cash to make the trip. You need an additional {{ data.formatted_money }}. Airport security escorts you out of the building.</p><p><a href='bank.php'>Head to the bank</a> or <a href='airport.php'>pick a cheaper flight</a>.</p>
+    {% elseif data.error == 'FALSE_PASSPORT_SPOTTED' %}
+        <p>Your False Passport was spotted by the border guards and you are taken in for questioning. Like most things at the airport, you spend a <strong>lot</strong> of time waiting around. They confiscate your passport, take your ticket, and throw you in jail. Damn.</p>
+    {% elseif data.error == 'BAD_DESTINATION' %}
+        <p>You cannot travel there. They are far too cool for you. Airport security escorts you out of the building.</p><p><a href='airport.php'>Back to the main terminal.</a></p>
+    {% else %}
+        {% if data.error == 'FALSE_PASSPORT_CONFISCATED' %}
+            <p>Your False Passport got you there, but the boarder guards do not like the look of you and confiscate your passport for further examination. Be careful - they could pick you up at any time for questioning and confiscate your property!</p>
+        {% elseif data.error == 'ALREADY_THERE' %}
+            <p>You buy a ticket to the city you are in and proceed to the security station.  The guard there is not the brightest, but even he knows that it is suspicious to try and fly into the city you are in now.  He takes your ticket and escorts you to the <em>VIP Lounge</em> which looks a lot like a small white room.</p><p>In time, a very nice lady comes and tells you, very politely, that your plane has landed and escorts you to the luggage claim area.  Welcome to {{ data.location }}, your final destination!</p>
+        {% endif %}
+        <p>Congratulations, you paid {{ data.fee }} to fly in {{ data.class }} to {{ data.destination }}. {{ data.message }}</p><p><a href='explore.php'>Visit the city</a> or <a href='home.php'>head on Home</a>.</p>
+    {% endif %}
 {% endblock %}

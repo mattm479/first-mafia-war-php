@@ -2,9 +2,8 @@
 
 namespace Fmw;
 
-class Estate implements BaseInterface
+class Estate extends BaseClass
 {
-    private readonly Application $application;
     private string $estate;
     private string $user_estate;
     private array $current_estate;
@@ -12,7 +11,8 @@ class Estate implements BaseInterface
 
     public function __construct(Application $application)
     {
-        $this->application = $application;
+        parent::__construct($application);
+
         $this->estate = "residence_{$this->application->user['location']}";
         $this->user_estate = "u.residence_{$this->application->user['location']}";
         $query = $this->application->db->query("SELECT h.hID, h.hNAME, h.hPRICE, u.userid FROM houses h LEFT JOIN users u ON h.hID = {$this->user_estate} WHERE u.userid = {$this->application->user['userid']}");
@@ -49,11 +49,7 @@ class Estate implements BaseInterface
             }
         }
 
-        $this->application->template->render('estate.html.twig', [
-            'header' => $this->application->header->getHeaderData(),
-            'sidebar' => $this->application->header->getSidebarData(),
-            'data' => $data,
-        ]);
+        $this->render('estate.html.twig', $data);
     }
 
     public function buy_house(int $property): void
@@ -78,11 +74,7 @@ class Estate implements BaseInterface
             setWillpower($this->application->user['userid']);
         }
 
-        $this->application->template->render('estate/buy.html.twig', [
-           'header' => $this->application->header->getHeaderData(),
-           'sidebar' => $this->application->header->getSidebarData(),
-           'data' => $data,
-        ]);
+        $this->render('estate/buy.html.twig', $data);
     }
 
     public function sell_house(int $property): void
@@ -104,10 +96,6 @@ class Estate implements BaseInterface
             setWillpower($this->application->user['userid']);
         }
 
-        $this->application->template->render('estate/sell.html.twig', [
-            'header' => $this->application->header->getHeaderData(),
-            'sidebar' => $this->application->header->getSidebarData(),
-            'data' => $data
-        ]);
+        $this->render('estate/sell.html.twig', $data);
     }
 }

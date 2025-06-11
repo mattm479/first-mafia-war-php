@@ -1,0 +1,39 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Street Fight</h3>
+    <div class=floatright>
+        <img src='assets/images/photos/streetFight.jpg' width=350 height=234 alt='Street Fight'><br>
+        <table width=340 cellpadding=2 cellspacing=0 class=table style='font-size:smaller;'>
+            {% for fight in data.fights %}
+                <tr><td colspan=3><br></td></tr>
+                <tr>
+                    <th>{{ fight.join|raw }}</th>
+                    <th style='text-align:left;'>{{ fight.sfTitle }} <span class=light>(level {{ fight.sfLevelMin }}-{{ fight.sfLevelMax }})</span></th>
+                    <th style='text-align=right;'>Score</th>
+                </tr>
+                {% for fighter in fight.fighters %}
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;{{ fighter.mafioso|raw }}</td>
+                        <td align=center>{{ fighter.attacks }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </table>
+    </div>
+    <p>Street fights can last anywhere from a few hours to days. You can only be in one street fight at a time and fights are limited by level so you cannot be in all fights. At the end of the fight, the top fighter gets the Grand Prize and the top three fighters gain a smaller gift.</p>
+    <p>During the combat period, all fights you win get you two points. You lose one point for losing a fight, and you lose three points for picking up a dagger (so if you get a dagger - AND lose, you lose four points). The fighter with the most points at the end of the fight wins.</p>
+    &rang; <em>Current Fights</em><br>
+    {% for fight in data.current_fights %}
+        <p><strong>{{ fight.sfTitle }}</strong> <span class=light>(level {{ fight.sfLevelMin }}-{{ fight.sfLevelMax }})</span> <br>This fight will last {{ fight.sfEnd }} more hours. The Grand Prize is a {{ fight.grand_prize|raw }}, the three top fighters each get a {{ fight.gift|raw }}.</p>
+    {% endfor %}
+    &rang; <em>Upcoming Fights</em><br>
+    {% for fight in data.upcoming_fights %}
+        <p><strong>{{ fight.sfTitle }}</strong> <span class=light>(level {{ fight.sfLevelMin }}-{{ fight.sfLevelMax }})</span> <br>This fight begins {{ fight.start }} and will last {{ fight.sfEnd }} more hours. The Grand Prize is a {{ fight.grand_prize|raw }}, the three top fighters each get a {{ fight.gift|raw }}.</p>
+    {% endfor %}
+    &rang; <em>Recent Fights</em><br>
+    {% for fight in data.recent_fights %}
+        <strong>{{ fight.sfTitle }}</strong><br><p>{{ fight.sfComment|raw }}</p>
+    {% endfor %}
+{% endblock %}

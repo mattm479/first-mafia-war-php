@@ -2,22 +2,16 @@
 
 namespace Fmw;
 
-class Jail implements BaseInterface
+class Jail extends BaseClass
 {
-    private readonly Application $application;
-
     public function __construct(Application $application)
     {
-        $this->application = $application;
+        parent::__construct($application);
     }
 
     public function index()
     {
-        $this->application->template->render('jail.html.twig', [
-            'header' => $this->application->header->getHeaderData(),
-            'sidebar' => $this->application->header->getSidebarData(),
-            'data' => [ 'inmates' => $this->show_list() ]
-        ]);
+        $this->render('jail.html.twig', [ 'inmates' => $this->show_list() ]);
     }
 
     public function bribe(int $userId): void
@@ -46,11 +40,7 @@ class Jail implements BaseInterface
             logEvent($userId, mafiosoLight($this->application->user['userid'])." sprung you from jail by bribing the guards.");
         }
 
-        $this->application->template->render('jail/bribe.html.twig', [
-            'header' => $this->application->header->getHeaderData(),
-            'sidebar' => $this->application->header->getSidebarData(),
-            'data' => $data
-        ]);
+        $this->render('jail/bribe.html.twig', $data);
     }
 
     function bust(int $userId): void
@@ -60,11 +50,7 @@ class Jail implements BaseInterface
             'userId' => $userId
         ];
 
-        $this->application->template->render('jail/bust.html.twig', [
-            'header' => $this->application->header->getHeaderData(),
-            'sidebar' => $this->application->header->getSidebarData(),
-            'data' => $data
-        ]);
+        $this->render('jail/bust.html.twig', $data);
     }
 
     function do_bust(int $userId, int $respect): void
@@ -114,11 +100,7 @@ class Jail implements BaseInterface
             }
         }
 
-        $this->application->template->render('jail/do_bust.html.twig', [
-            'header' => $this->application->header->getHeaderData(),
-            'sidebar' => $this->application->header->getSidebarData(),
-            'data' => $data
-        ]);
+        $this->render('jail/do_bust.html.twig', $data);
     }
 
     function show_list(): array

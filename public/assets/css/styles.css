@@ -274,12 +274,9 @@ ol {margin: 0; padding:0em 0em 0em 2em;}
 .lightest {font-style:italic; font-size:.8em; font-weight:normal;}
 
 .logout {                       /* Actually the login! */
-  margin: 0;
   padding: 5px 20px 5px 5px;
   overflow: hidden;
-  float: right;
   clear: right;
-  position: absolute;
 }
 
 #login {background:url(../images/layout/login.jpg) 20px 0 no-repeat; padding: 0 25px;}

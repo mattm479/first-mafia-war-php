@@ -1,0 +1,24 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Harry Maher's Used Car Lot</h3>
+    <p><em>Well, this is the first time the customer ever high-pressured the salesman.</em></p>
+    <div class=floatright>
+        <img src='assets/images/photos/usedCarLot.jpg' width=247 height=338 alt='Used Car Lot'>
+    </div>
+    <p>Welcome to the best place to buy cars anywhere in the world. Well, OK, the only place to buy cars anywhere in the world - it is a state of mind. We have a number of excellent cars here. Please pick the one you want and drive it home today!</p><p>Remember, your car and everything you buy for it, requires maintenance. Your banker will handle the payments (damn sticky fingers) but maintenance goes up a little every day you ignore your cars needs.</p>
+    {% if data.user.autoOwned > 0 %}
+        <p>You own a fine car, the {{ data.auto.auName }}. I cannot imagine you would want to sell it, but if you do, I will take {{ data.trade_in }} in cash or trade. Oh well you know, depreciation man.</p>
+        <p><a href=automotive.php?act=sell&ID={{ data.auto.auID }}><strong>Sell your car</strong></a></p>
+    {% endif %}
+    <table width=60% cellpadding=3 cellspacing=0 class=table>
+        {% for car in data.autos %}
+            {% if data.user.autoOwned != car.auID %}
+                <tr>
+                    <td><img src='assets/images/autos/{{ car.auName }}.jpg' alt=car></td>
+                    <td><strong>{{ car.auName }}</strong><br>{{ car.price }} &nbsp; <- <a href='automotive.php?act=buy&ID={{ car.auID }}'>buy</a></td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+{% endblock %}

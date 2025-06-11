@@ -1,0 +1,19 @@
+{% extends 'layout/base.html.twig' %}
+
+{% block content %}
+    <h3>Consignment Market</h3>
+    <div class=floatright>
+        <br>
+        <img src='assets/images/photos/itemMarket.jpg' width=200 height=267 alt=Shop>
+    </div>
+    {% if data.error == 'NO_ITEM' %}
+        <p>This item does not exist, no longer exists, or it was purchased while you were waiting in line.</p>
+        <p><a href='consignmentMarket.php'>Return</a></p>
+    {% elseif data.error == 'NOT_ENOUGH_CURRENCY' %}
+        <p>You do not have the funds to buy this item.</p>
+        <p><a href='consignmentMarket.php'>return to the market</a></p>
+    {% else %}
+        <p>Congratulations. You purchased the {{ data.item_name }} from the Market for {{ data.purchase }}.</p>
+        <p><a href='consignmentMarket.php'>Back to the market</a> or <a href='home.php'>head on home</a>.</p>
+    {% endif %}
+{% endblock %}
